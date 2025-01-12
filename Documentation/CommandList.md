@@ -1,4 +1,4 @@
-# Essentials Mod (1.18.2)
+# Essentials Mod (1.18.2-Forge)
 
 ## Commands Documentation
 
