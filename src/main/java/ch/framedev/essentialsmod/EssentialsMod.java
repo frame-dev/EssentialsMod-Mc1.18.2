@@ -138,4 +138,7 @@ public class EssentialsMod {
         );
     }
 
+    public static Logger getLOGGER() {
+        return LOGGER;
+    }
 }
