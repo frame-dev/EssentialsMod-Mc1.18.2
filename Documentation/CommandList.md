@@ -1,6 +1,6 @@
 # Essentials Mod (1.18.2-Forge)
 
-More Informations available here: []()
+More Informations available here: [README](https://github.com/frame-dev/EssentialsMod-Mc1.18.2-Forge/blob/7d08470b589b750c7ec89aa11b9c70cf81eaab7a/README.md)
 
 ## Commands Documentation
 
