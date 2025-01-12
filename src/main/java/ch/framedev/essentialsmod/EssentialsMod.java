@@ -63,7 +63,7 @@ public class EssentialsMod {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        // some pre init code
+        // some pre-init code
         LOGGER.info("HELLO FROM PREINIT");
     }
 
@@ -107,6 +107,7 @@ public class EssentialsMod {
         event.getDispatcher().register(DeleteHomeCommand.register());
         event.getDispatcher().register(InvseeCommand.register());
         event.getDispatcher().register(EnderChestCommand.register());
+        event.getDispatcher().register(TpaHereCommand.register());
         event.getDispatcher().register(TpaCommand.register());
         event.getDispatcher().register(SpawnCommand.register());
         event.getDispatcher().register(SetSpawnCommand.register());

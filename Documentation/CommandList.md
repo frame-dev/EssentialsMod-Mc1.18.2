@@ -99,8 +99,13 @@ This command teleports you to the world spawn location.
 
 ---
 
-### **```/tpa <PlayerName|accept|deny)>```**
+### **```/tpa <PlayerName|accept|deny>```**
 This command allows players to request teleportation to another player and accept or deny incoming requests.
+
+---
+
+### **```/tpahere <PlayerName|accept|deny>```**
+This command allows the current player to request teleportation to you and accept or deny incoming requests.
 
 ---
 

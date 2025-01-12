@@ -115,6 +115,11 @@ This command allows players to request teleportation to another player and accep
 
 ---
 
+### **```/tpahere <PlayerName|accept|deny>```**
+This command allows the current player to request teleportation to you and accept or deny incoming requests.
+
+---
+
 ### **```/vanish <optional PlayerName>```**
 This command toggles the invisibility of the specified player or yourself if no player name is provided. *(Only Admins)*
 
