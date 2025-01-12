@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
@@ -56,7 +57,7 @@ public class NewGameModeCommand {
 
         GameType gameType = getGameTypeFromString(mode);
         if (gameType == null) {
-            context.getSource().sendFailure(new TextComponent("Invalid game mode: " + mode));
+            context.getSource().sendFailure(new TextComponent("Invalid game mode: " + mode).withStyle(ChatFormatting.RED));
             return 0;
         }
 
@@ -71,13 +72,13 @@ public class NewGameModeCommand {
 
         ServerPlayer targetPlayer = context.getSource().getServer().getPlayerList().getPlayerByName(targetName);
         if (targetPlayer == null) {
-            context.getSource().sendFailure(new TextComponent("Player not found: " + targetName));
+            context.getSource().sendFailure(new TextComponent("Player not found: " + targetName).withStyle(ChatFormatting.RED));
             return 0;
         }
 
         GameType gameType = getGameTypeFromString(mode);
         if (gameType == null) {
-            context.getSource().sendFailure(new TextComponent("Invalid game mode: " + mode));
+            context.getSource().sendFailure(new TextComponent("Invalid game mode: " + mode).withStyle(ChatFormatting.RED));
             return 0;
         }
 

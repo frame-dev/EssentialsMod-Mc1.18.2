@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -42,7 +43,7 @@ public class InvseeCommand {
                 // Player is online, open their inventory directly
                 openPlayerInventory(currentPlayer, targetPlayer);
             } else {
-                currentPlayer.sendMessage(new TextComponent("This Player is not online"), Util.NIL_UUID);
+                currentPlayer.sendMessage(new TextComponent("This Player is not online").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
         }
 

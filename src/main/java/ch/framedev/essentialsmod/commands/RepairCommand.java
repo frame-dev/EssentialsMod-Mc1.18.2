@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -29,12 +30,12 @@ public class RepairCommand {
             ItemStack stack = player.getMainHandItem();
 
             if (stack.isEmpty()) {
-                player.sendMessage(new TextComponent("You are not holding any item!"), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("You are not holding any item!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return 0; // Fail if no item is held
             }
 
             if (!stack.isDamageableItem()) {
-                player.sendMessage(new TextComponent("The item in your hand cannot be repaired!"), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("The item in your hand cannot be repaired!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return 0; // Fail if the item is not damageable
             }
 
@@ -57,12 +58,12 @@ public class RepairCommand {
             ItemStack stack = targetPlayer.getMainHandItem();
 
             if (stack.isEmpty()) {
-                command.getSource().sendSuccess(new TextComponent(playerName + " is not holding any item!"), true);
+                command.getSource().sendSuccess(new TextComponent(playerName + " is not holding any item!").withStyle(ChatFormatting.RED), true);
                 return 0; // Fail if no item is held
             }
 
             if (!stack.isDamageableItem()) {
-                command.getSource().sendSuccess(new TextComponent("The item in " + playerName + "'s hand cannot be repaired!"), true);
+                command.getSource().sendSuccess(new TextComponent("The item in " + playerName + "'s hand cannot be repaired!").withStyle(ChatFormatting.RED), true);
                 return 0; // Fail if the item is not damageable
             }
 
@@ -76,7 +77,7 @@ public class RepairCommand {
             return Command.SINGLE_SUCCESS; // Indicate success
         } else {
             // Player not found
-            command.getSource().sendFailure(new TextComponent("Player not found: " + playerName));
+            command.getSource().sendFailure(new TextComponent("Player not found: " + playerName).withStyle(ChatFormatting.RED));
             return 0;
         }
     }

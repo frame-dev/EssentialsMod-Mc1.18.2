@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -56,7 +57,7 @@ public class FeedCommand {
             return 1; // Indicate success
         } else {
             // Target player not found
-            command.getSource().sendFailure(new TextComponent("Player not found: " + playerName));
+            command.getSource().sendFailure(new TextComponent("Player not found: " + playerName).withStyle(ChatFormatting.RED));
             return 0; // Indicate failure
         }
     }

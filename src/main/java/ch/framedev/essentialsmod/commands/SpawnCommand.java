@@ -3,6 +3,7 @@ package ch.framedev.essentialsmod.commands;
 import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -44,7 +45,7 @@ public class SpawnCommand {
                     player.teleportTo(safeSpawnPos.getX() + 0.5, safeSpawnPos.getY(), safeSpawnPos.getZ() + 0.5);
                     player.sendMessage(new TextComponent("Teleported to the world's safe spawn point!"), Util.NIL_UUID);
                 } else {
-                    player.sendMessage(new TextComponent("Unable to find a safe spawn location."), Util.NIL_UUID);
+                    player.sendMessage(new TextComponent("Unable to find a safe spawn location.").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 }
             }
         }

@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
@@ -47,7 +48,7 @@ public class FlyCommand {
 
     private static int executeDefault(CommandContext<CommandSourceStack> command) {
         if(!(command.getSource().getEntity() instanceof ServerPlayer player)) {
-            command.getSource().sendFailure(new TextComponent("Only Player can execute this command!"));
+            command.getSource().sendFailure(new TextComponent("Only Player can execute this command!").withStyle(ChatFormatting.RED));
             return 0;
         }
         if (player.getAbilities().mayfly) {

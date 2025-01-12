@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -39,7 +40,7 @@ public class DeleteWarpCommand {
                 player.sendMessage(new TextComponent("Warp \"" + warpName + "\" was successfully deleted!"), Util.NIL_UUID);
                 return 1; // Success
             } else {
-                player.sendMessage(new TextComponent("Failed to delete warp \"" + warpName + "\". Please try again."), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("Failed to delete warp \"" + warpName + "\". Please try again.").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return 0; // Failure
             }
         } catch (CommandSyntaxException e) {

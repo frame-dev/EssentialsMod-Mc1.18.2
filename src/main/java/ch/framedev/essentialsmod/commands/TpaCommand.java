@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -46,7 +47,7 @@ public class TpaCommand {
                     source.sendFailure(new TextComponent("Player already has a pending TPA request."));
                 }
             } else {
-                source.sendFailure(new TextComponent("Player not found."));
+                source.sendFailure(new TextComponent("Player not found.").withStyle(ChatFormatting.RED));
             }
         }
         return 1;

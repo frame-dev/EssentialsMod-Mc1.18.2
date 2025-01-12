@@ -2,6 +2,7 @@ package ch.framedev.essentialsmod.events;
 
 import ch.framedev.essentialsmod.utils.Config;
 import ch.framedev.essentialsmod.commands.BackCommand;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -24,7 +25,7 @@ public class BackEvent {
                 player.sendMessage(new TextComponent("If you wan't Back to your Death Location use /back!"), player.getUUID());
             } else {
                 if (player.hasPermissions(2))
-                    player.sendMessage(new TextComponent("Back to Death Location is disabled in your config."), player.getUUID());
+                    player.sendMessage(new TextComponent("Back to Death Location is disabled in your config.").withStyle(ChatFormatting.RED), player.getUUID());
             }
         }
     }

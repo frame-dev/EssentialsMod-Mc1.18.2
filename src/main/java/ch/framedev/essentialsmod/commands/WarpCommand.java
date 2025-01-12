@@ -6,6 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -38,7 +39,7 @@ public class WarpCommand {
                 return 0; // Failure
             }
         } catch (CommandSyntaxException e) {
-            command.getSource().sendFailure(new TextComponent("An error occurred while executing the /warp command."));
+            command.getSource().sendFailure(new TextComponent("An error occurred while executing the /warp command.").withStyle(ChatFormatting.RED));
             return 0;
         }
     }

@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -49,7 +50,7 @@ public class MuteCommand {
             }
             return 1; // Command executed successfully
         } else {
-            source.sendFailure(new TextComponent("Player not found: " + playerName));
+            source.sendFailure(new TextComponent("Player not found: " + playerName).withStyle(ChatFormatting.RED));
             return 0; // Command failed
         }
     }
