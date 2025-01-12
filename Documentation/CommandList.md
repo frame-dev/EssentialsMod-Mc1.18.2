@@ -1,5 +1,7 @@
 # Essentials Mod (1.18.2-Forge)
 
+More Informations available here: []()
+
 ## Commands Documentation
 
 ### **/adminsword**
