@@ -35,7 +35,7 @@ public class WarpCommand {
                 player.sendMessage(new TextComponent("Teleported to warp \"" + warpName + "\"."), Util.NIL_UUID);
                 return 1; // Success
             } else {
-                player.sendMessage(new TextComponent("Warp \"" + warpName + "\" not found."), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("Warp \"" + warpName + "\" not found.").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return 0; // Failure
             }
         } catch (CommandSyntaxException e) {

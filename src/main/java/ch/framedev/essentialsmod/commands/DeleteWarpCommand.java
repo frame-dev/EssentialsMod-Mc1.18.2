@@ -32,7 +32,7 @@ public class DeleteWarpCommand {
             String warpName = command.getArgument("warpName", String.class);
 
             if (!existsWarp(warpName)) {
-                player.sendMessage(new TextComponent("Warp \"" + warpName + "\" not found."), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("Warp \"" + warpName + "\" not found.").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return 0; // Warp not found
             }
 

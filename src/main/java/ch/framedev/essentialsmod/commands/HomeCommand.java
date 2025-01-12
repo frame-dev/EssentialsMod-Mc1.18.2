@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -31,7 +32,7 @@ public class HomeCommand {
             if (teleportToHome(player, homeName)) {
                 player.sendMessage(new TextComponent("Teleported to home: " + homeName), Util.NIL_UUID);
             } else {
-                player.sendMessage(new TextComponent("Home not found: " + homeName), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("Home not found: " + homeName).withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
         }
         return Command.SINGLE_SUCCESS;
@@ -42,7 +43,7 @@ public class HomeCommand {
             if (teleportToHome(player, "home")) {
                 player.sendMessage(new TextComponent("Teleported to your default home!"), Util.NIL_UUID);
             } else {
-                player.sendMessage(new TextComponent("No default home set!"), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("No default home set!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
         }
         return Command.SINGLE_SUCCESS;
