@@ -11,6 +11,8 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
 public class FeedCommand {
+
+    // Feed Command
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("feed")
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(2)) // Restrict command to operators or permission level 2+
