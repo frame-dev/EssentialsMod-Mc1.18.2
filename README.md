@@ -2,6 +2,17 @@
 
 Welcome to the **Essentials Mod (1.18.2-Forge)**! This mod adds a collection of useful commands to enhance your Minecraft experience. Below is a detailed list of all the available commands and their functionalities.
 
+The Data will be saved in the following File ***rootDirectory/config/essentials/config.yml***
+
+---
+
+## Data Storage
+
+The data will be saved in the following file:
+```
+rootDirectory/config/essentials/config.yml
+```
+
 ---
 
 ## Commands Documentation
