@@ -1,5 +1,6 @@
-package ch.framedev.essentialsmod.commands;
+package ch.framedev.essentialsmod.events;
 
+import ch.framedev.essentialsmod.commands.MuteCommand;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

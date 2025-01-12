@@ -1,6 +1,7 @@
-package ch.framedev.essentialsmod.commands;
+package ch.framedev.essentialsmod.events;
 
-import ch.framedev.essentialsmod.Config;
+import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.commands.BackCommand;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;

@@ -1,4 +1,4 @@
-package ch.framedev.essentialsmod;
+package ch.framedev.essentialsmod.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

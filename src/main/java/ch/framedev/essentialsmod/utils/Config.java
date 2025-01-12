@@ -1,5 +1,6 @@
-package ch.framedev.essentialsmod;
+package ch.framedev.essentialsmod.utils;
 
+import ch.framedev.essentialsmod.EssentialsMod;
 import ch.framedev.yamlutils.FileConfiguration;
 
 import java.io.IOException;

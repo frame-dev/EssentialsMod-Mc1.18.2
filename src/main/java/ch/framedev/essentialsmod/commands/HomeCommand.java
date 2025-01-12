@@ -1,7 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
-import ch.framedev.essentialsmod.Config;
-import ch.framedev.yamlutils.FileConfiguration;
+import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -16,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class HomeCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> register() {

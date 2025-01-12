@@ -1,7 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
-import ch.framedev.essentialsmod.Config;
-import ch.framedev.yamlutils.FileConfiguration;
+import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -10,14 +9,12 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class DeleteHomeCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> register() {

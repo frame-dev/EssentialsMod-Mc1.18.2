@@ -1,6 +1,11 @@
 package ch.framedev.essentialsmod;
 
 import ch.framedev.essentialsmod.commands.*;
+import ch.framedev.essentialsmod.events.BackEvent;
+import ch.framedev.essentialsmod.events.ChatEventHandler;
+import ch.framedev.essentialsmod.events.InventorySyncHandler;
+import ch.framedev.essentialsmod.events.PlayerJoinEvent;
+import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.logging.LogUtils;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.level.block.Block;

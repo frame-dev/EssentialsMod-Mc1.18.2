@@ -1,6 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
-import ch.framedev.essentialsmod.Config;
+import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.Util;

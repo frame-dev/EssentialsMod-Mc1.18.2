@@ -1,4 +1,4 @@
-package ch.framedev.essentialsmod;
+package ch.framedev.essentialsmod.events;
 
 import ch.framedev.essentialsmod.commands.InvseeCommand;
 import net.minecraft.Util;
