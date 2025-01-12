@@ -1,6 +1,6 @@
-# Essentials Mod (1.18.2)
+# Essentials Mod (1.18.2-Forge)
 
-Welcome to the **Essentials Mod (1.18.2)**! This mod adds a collection of useful commands to enhance your Minecraft experience. Below is a detailed list of all the available commands and their functionalities.
+Welcome to the **Essentials Mod (1.18.2-Forge)**! This mod adds a collection of useful commands to enhance your Minecraft experience. Below is a detailed list of all the available commands and their functionalities.
 
 ---
 
