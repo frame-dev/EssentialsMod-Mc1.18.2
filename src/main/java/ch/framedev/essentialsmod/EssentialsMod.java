@@ -9,7 +9,6 @@ import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.logging.LogUtils;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -44,6 +43,7 @@ public class EssentialsMod {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         // Register the processIMC method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
+
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
 
         MinecraftForge.EVENT_BUS.register(new PlayerJoinEvent());
@@ -65,12 +65,11 @@ public class EssentialsMod {
     private void setup(final FMLCommonSetupEvent event) {
         // some pre init code
         LOGGER.info("HELLO FROM PREINIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
         // Some example code to dispatch IMC to another mod
-        InterModComms.sendTo("examplemod", "helloworld", () -> {
+        InterModComms.sendTo("essentials", "helloworld", () -> {
             LOGGER.info("Hello world from the MDK");
             return "Hello world";
         });
