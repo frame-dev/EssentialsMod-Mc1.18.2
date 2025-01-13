@@ -11,7 +11,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = "essentials") // Replace with your mod's ID
-public class BackEvent {
+public class BackEventHandler {
 
     @SubscribeEvent
     public static void onPlayerDeath(LivingDeathEvent event) {
@@ -22,7 +22,7 @@ public class BackEvent {
                 // Send a message to the player (if respawn screen is not disabled)
                 Vec3 vec3 = new Vec3(player.getX(), player.getY(), player.getZ());
                 BackCommand.backMap.put(player, vec3);
-                player.sendMessage(new TextComponent("If you wan't Back to your Death Location use /back!"), player.getUUID());
+                player.sendMessage(new TextComponent("If you won't Back to your Death Location use /back!"), player.getUUID());
             } else {
                 if (player.hasPermissions(2))
                     player.sendMessage(new TextComponent("Back to Death Location is disabled in your config.").withStyle(ChatFormatting.RED), player.getUUID());

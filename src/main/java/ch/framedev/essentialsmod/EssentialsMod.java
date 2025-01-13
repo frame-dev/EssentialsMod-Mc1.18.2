@@ -1,7 +1,7 @@
 package ch.framedev.essentialsmod;
 
 import ch.framedev.essentialsmod.commands.*;
-import ch.framedev.essentialsmod.events.BackEvent;
+import ch.framedev.essentialsmod.events.BackEventHandler;
 import ch.framedev.essentialsmod.events.ChatEventHandler;
 import ch.framedev.essentialsmod.events.InventorySyncHandler;
 import ch.framedev.essentialsmod.events.PlayerJoinEvent;
@@ -49,7 +49,7 @@ public class EssentialsMod {
 
         MinecraftForge.EVENT_BUS.register(new PlayerJoinEvent());
         MinecraftForge.EVENT_BUS.register(new InventorySyncHandler());
-        MinecraftForge.EVENT_BUS.register(new BackEvent());
+        MinecraftForge.EVENT_BUS.register(new BackEventHandler());
         MinecraftForge.EVENT_BUS.register(new ChatEventHandler());
 
         // Register ourselves for server and other game events we are interested in

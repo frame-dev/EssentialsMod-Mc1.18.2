@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
+import org.jetbrains.annotations.NotNull;
 
 public class EnderChestCommand {
 
@@ -28,8 +29,7 @@ public class EnderChestCommand {
 
     private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
-            if (!VanishCommand.vanishList.contains(player.getGameProfile().getName()))
-                builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions
+            builder.suggest(player.getGameProfile().getName());
         }
         return builder.buildFuture();
     };

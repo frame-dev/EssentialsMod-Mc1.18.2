@@ -12,11 +12,11 @@ public class Config {
     private final FileConfiguration config;
 
     public Config() {
-        if(!EssentialsMod.configFile.exists()) {
-            if(!EssentialsMod.configFile.getParentFile().mkdirs())
+        if (!EssentialsMod.configFile.exists()) {
+            if (!EssentialsMod.configFile.getParentFile().mkdirs())
                 throw new RuntimeException("Failed to create directory for config.");
             try {
-                if(!EssentialsMod.configFile.createNewFile())
+                if (!EssentialsMod.configFile.createNewFile())
                     throw new RuntimeException("Failed to create config file.");
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -24,7 +24,7 @@ public class Config {
         }
         this.config = new FileConfiguration(EssentialsMod.configFile);
         this.config.load();
-        if(!config.containsKey("back")) {
+        if (!config.containsKey("back")) {
             this.config.set("back", true);
             this.config.save();
         }
@@ -36,6 +36,12 @@ public class Config {
 
     public Object get(String key) {
         return config.get(key);
+    }
+
+    public Object getOrDefault(String key, Object defaultValue) {
+        if (config.containsKey(key))
+            return config.get(key);
+        return defaultValue;
     }
 
     public String getString(String key) {

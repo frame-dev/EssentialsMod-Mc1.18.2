@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -40,6 +41,7 @@ public class AdminSwordCommand {
 
             itemStack.enchant(Enchantments.SHARPNESS, 126);
             player.getInventory().add(itemStack);
+            command.getSource().sendSuccess(new TextComponent("You successfully got the Admin Sword!"), true);
             return 1;
         }
         return 0;

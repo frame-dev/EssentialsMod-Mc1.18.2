@@ -21,8 +21,7 @@ public class SetHomeCommand {
 
     private static int executeWithContext(CommandContext<CommandSourceStack> command) {
         String home = StringArgumentType.getString(command, "homeName");
-        if (command.getSource().getEntity() instanceof Player) {
-            Player player = (Player) command.getSource().getEntity();
+        if (command.getSource().getEntity() instanceof Player player) {
             String playerName = player.getName().getString();
             player.sendMessage(new TextComponent("Home Set with name " + home), Util.NIL_UUID);
             Config config = new Config();
@@ -35,8 +34,7 @@ public class SetHomeCommand {
     }
 
     private static int execute(CommandContext<CommandSourceStack> command) {
-        if (command.getSource().getEntity() instanceof Player) {
-            Player player = (Player) command.getSource().getEntity();
+        if (command.getSource().getEntity() instanceof Player player) {
             String playerName = player.getName().getString();
             player.sendMessage(new TextComponent("Home Set"), Util.NIL_UUID);
             Config config = new Config();
