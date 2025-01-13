@@ -25,6 +25,8 @@ public class SetHomeCommand {
             String playerName = player.getName().getString();
             player.sendMessage(new TextComponent("Home Set with name " + home), Util.NIL_UUID);
             Config config = new Config();
+            String dimension = player.level.dimension().location().toString();
+            config.getConfig().set("home." + playerName + "."+home+".dimension", dimension);
             config.getConfig().set("home." + playerName + "." + home + ".x", player.getBlockX());
             config.getConfig().set("home." + playerName + "." + home + ".y", player.getBlockY());
             config.getConfig().set("home." + playerName + "." + home + ".z", player.getBlockZ());
@@ -38,6 +40,8 @@ public class SetHomeCommand {
             String playerName = player.getName().getString();
             player.sendMessage(new TextComponent("Home Set"), Util.NIL_UUID);
             Config config = new Config();
+            String dimension = player.level.dimension().location().toString();
+            config.getConfig().set("home." + playerName + ".home.dimension", dimension);
             config.getConfig().set("home." + playerName + ".home.x", player.getBlockX());
             config.getConfig().set("home." + playerName + ".home.y", player.getBlockY());
             config.getConfig().set("home." + playerName + ".home.z", player.getBlockZ());

@@ -27,6 +27,8 @@ public class SetWarpCommand {
             String warpPath = "warp." + warpName;
 
             // Save the warp location in the config
+            String dimension = serverPlayer.level.dimension().location().toString();
+            config.getConfig().set(warpPath + ".dimension", dimension); // Save dimension for compatibility with other plugins that use dimension IDs
             config.getConfig().set(warpPath + ".x", serverPlayer.getBlockX());
             config.getConfig().set(warpPath + ".y", serverPlayer.getBlockY());
             config.getConfig().set(warpPath + ".z", serverPlayer.getBlockZ());

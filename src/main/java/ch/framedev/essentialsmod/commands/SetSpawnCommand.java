@@ -26,6 +26,7 @@ public class SetSpawnCommand {
             try {
                 ServerLevel world = command.getSource().getLevel(); // Get the current world
                 Config config = new Config();
+                config.set("spawn.dimension", world.getLevel().dimension().location());
                 config.getConfig().set("spawn.x", player.getBlockX());
                 config.getConfig().set("spawn.y", player.getBlockY());
                 config.getConfig().set("spawn.z", player.getBlockZ());
