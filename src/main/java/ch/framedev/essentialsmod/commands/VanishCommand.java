@@ -9,6 +9,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundRemoveEntitiesPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashSet;
@@ -32,9 +33,16 @@ public class VanishCommand {
                 // Unvanish the player
                 vanishList.remove(playerName);
                 player.sendMessage(new TextComponent("You are now visible."), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("Please Rejoin to be fully visible."), Util.NIL_UUID);
+
+                MinecraftServer server = player.getServer();
+                if(server == null) {
+                    player.sendMessage(new TextComponent("Server not found."), Util.NIL_UUID);
+                    return 0; // Fail if the server is null
+                }
 
                 // Notify other players to re-add the vanished player
-                for (ServerPlayer otherPlayer : player.getServer().getPlayerList().getPlayers()) {
+                for (ServerPlayer otherPlayer : server.getPlayerList().getPlayers()) {
                     otherPlayer.connection.send(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, player));
                     otherPlayer.connection.send(new ClientboundAddEntityPacket(player));
                 }
@@ -43,8 +51,14 @@ public class VanishCommand {
                 vanishList.add(playerName);
                 player.sendMessage(new TextComponent("You are now vanished."), Util.NIL_UUID);
 
+                MinecraftServer server = player.getServer();
+                if(server == null) {
+                    player.sendMessage(new TextComponent("Server not found."), Util.NIL_UUID);
+                    return 0; // Fail if the server is null
+                }
+
                 // Notify other players to remove the vanished player
-                for (ServerPlayer otherPlayer : player.getServer().getPlayerList().getPlayers()) {
+                for (ServerPlayer otherPlayer : server.getPlayerList().getPlayers()) {
                     if (otherPlayer != player && !vanishList.contains(otherPlayer.getName().getString()) && !otherPlayer.hasPermissions(2)) {
                         otherPlayer.connection.send(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, player));
                         otherPlayer.connection.send(new ClientboundRemoveEntitiesPacket(player.getId()));

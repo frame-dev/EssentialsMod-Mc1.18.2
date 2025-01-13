@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
+@SuppressWarnings("InstantiationOfUtilityClass")
 @Mod("essentials")
 public class EssentialsMod {
     // Directly reference a slf4j logger
@@ -105,21 +106,33 @@ public class EssentialsMod {
         event.getDispatcher().register(SetHomeCommand.register());
         event.getDispatcher().register(HomeCommand.register());
         event.getDispatcher().register(DeleteHomeCommand.register());
+
         event.getDispatcher().register(InvseeCommand.register());
         event.getDispatcher().register(EnderChestCommand.register());
+
         event.getDispatcher().register(TpaHereCommand.register());
         event.getDispatcher().register(TpaCommand.register());
+
         event.getDispatcher().register(SpawnCommand.register());
         event.getDispatcher().register(SetSpawnCommand.register());
+
         event.getDispatcher().register(VanishCommand.register());
+
         event.getDispatcher().register(NewGameModeCommand.register());
+
         event.getDispatcher().register(AdminSwordCommand.register());
+
         event.getDispatcher().register(RepairCommand.register());
+
         event.getDispatcher().register(FlyCommand.register());
+
         event.getDispatcher().register(HealCommand.register());
         event.getDispatcher().register(FeedCommand.register());
+
         event.getDispatcher().register(BackCommand.register());
+
         event.getDispatcher().register(MuteCommand.register());
+
         event.getDispatcher().register(WarpCommand.register());
         event.getDispatcher().register(DeleteWarpCommand.register());
         event.getDispatcher().register(SetWarpCommand.register());

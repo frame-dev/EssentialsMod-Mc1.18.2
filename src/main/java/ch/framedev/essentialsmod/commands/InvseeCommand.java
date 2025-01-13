@@ -20,15 +20,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class InvseeCommand {
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
-        return Commands.literal("invsee") // Command base
-                .then(Commands.argument("playerName", StringArgumentType.word()) // String argument
-                        .requires(source -> source.hasPermission(3)) // Restrict to operators (level 3 or higher)
+        return Commands.literal("invsee")
+                .requires(source -> source.hasPermission(3)) // Restrict to operators (level 3 or higher)
+                .then(Commands.argument("playerName", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(InvseeCommand::executeWithContext)); // Executes when command is provided
+                        .executes(InvseeCommand::executeWithContext));
     }
 
     private static int executeWithContext(CommandContext<CommandSourceStack> context) {
@@ -40,13 +41,15 @@ public class InvseeCommand {
             ServerPlayer targetPlayer = server.getPlayerList().getPlayerByName(playerName);
 
             if (targetPlayer != null) {
-                // Player is online, open their inventory directly
                 openPlayerInventory(currentPlayer, targetPlayer);
             } else {
-                currentPlayer.sendMessage(new TextComponent("This Player is not online").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                currentPlayer.sendMessage(
+                        new TextComponent("Player \"" + playerName + "\" is not online.")
+                                .withStyle(ChatFormatting.RED),
+                        Util.NIL_UUID
+                );
             }
         }
-
         return 1;
     }
 
@@ -56,6 +59,7 @@ public class InvseeCommand {
             virtualInventory.setItem(i, targetPlayer.getInventory().items.get(i));
         }
 
+        // Open other's Inventory in a VirtualInventory
         currentPlayer.openMenu(new SimpleMenuProvider(
                 (id, playerInventory, playerEntity) ->
                         new VirtualInventoryMenu(id, playerInventory, virtualInventory, targetPlayer),
@@ -65,8 +69,7 @@ public class InvseeCommand {
 
     private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
-            if (!VanishCommand.vanishList.contains(player.getGameProfile().getName()))
-                builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions
+            builder.suggest(player.getGameProfile().getName());
         }
         return builder.buildFuture();
     };
@@ -95,21 +98,21 @@ public class InvseeCommand {
                 }
             }
 
-            // Add player hotbar slots
+            // Add player hot bar slots
             for (int col = 0; col < 9; ++col) {
                 this.addSlot(new Slot(playerInventory, col, 8 + col * 18, 142));
             }
         }
 
         @Override
-        public boolean stillValid(Player player) {
+        public boolean stillValid(@NotNull Player player) {
             return true;
         }
 
         @Override
-        public ItemStack quickMoveStack(Player player, int index) {
+        public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
             Slot slot = this.slots.get(index);
-            if (slot != null && slot.hasItem()) {
+            if (slot.hasItem()) {
                 ItemStack stack = slot.getItem();
                 ItemStack originalStack = stack.copy();
 
@@ -149,5 +152,4 @@ public class InvseeCommand {
             return targetPlayer;
         }
     }
-
 }
