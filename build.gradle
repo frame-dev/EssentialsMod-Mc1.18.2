@@ -141,6 +141,7 @@ repositories {
     maven {
         url = uri("https://repository.framedev.ch:444/releases")
     }
+
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
@@ -155,6 +156,7 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.18.2-40.2.21'
+
 
     implementation fg.deobf("ch.framedev:JavaYamlUtils:1.2.0-RELEASE")
 //    shaded ("ch.framedev:JavaYamlUtils:1.2.0-RELEASE")
