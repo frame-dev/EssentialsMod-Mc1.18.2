@@ -4,6 +4,7 @@ import ch.framedev.essentialsmod.commands.MuteCommand;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.event.ServerChatEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -17,6 +18,7 @@ public class ChatEventHandler {
         if (MuteCommand.isPlayerMuted(playerName)) {
             // Cancel the chat event and notify the player
             event.setCanceled(true);
+            event.setResult(Event.Result.DENY);
             event.getPlayer().sendMessage(new TextComponent("You are muted and cannot send messages.").withStyle(ChatFormatting.RED), event.getPlayer().getUUID());
         }
     }
