@@ -102,7 +102,7 @@ public class LocationsManager {
         if (home == null)
             home = "home";
 
-        if (existsHome(playerName, home))
+        if (!existsHome(playerName, home))
             return null;
 
         Config config = new Config();

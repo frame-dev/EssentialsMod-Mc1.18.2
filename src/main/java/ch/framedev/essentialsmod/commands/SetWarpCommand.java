@@ -2,6 +2,7 @@ package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.Config;
 import ch.framedev.essentialsmod.utils.ChatUtils;
+import ch.framedev.essentialsmod.utils.Location;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -25,15 +26,8 @@ public class SetWarpCommand {
         Config config = new Config();
 
         if (command.getSource().getEntity() instanceof ServerPlayer serverPlayer) {
-            String warpPath = "warp." + warpName;
-
-            // Save the warp location in the config
             String dimension = serverPlayer.level.dimension().location().toString();
-            config.getConfig().set(warpPath + ".dimension", dimension); // Save dimension for compatibility with other plugins that use dimension IDs
-            config.getConfig().set(warpPath + ".x", serverPlayer.getBlockX());
-            config.getConfig().set(warpPath + ".y", serverPlayer.getBlockY());
-            config.getConfig().set(warpPath + ".z", serverPlayer.getBlockZ());
-            config.getConfig().save();
+            LocationsManager.setWarp(warpName, new Location(dimension, serverPlayer.getBlockX(), serverPlayer.getBlockY(), serverPlayer.getBlockZ()));
 
             // Feedback to the player
             String[] messages = new String[]{

@@ -2,6 +2,7 @@ package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.Config;
 import ch.framedev.essentialsmod.utils.ChatUtils;
+import ch.framedev.essentialsmod.utils.Location;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -11,14 +12,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,34 +57,15 @@ public class HomeCommand {
     }
 
     private static boolean teleportToHome(ServerPlayer player, String homeName) {
-        Config config = new Config();
-        String playerKey = "home." + player.getName().getString() + "." + homeName;
-        if (!config.getConfig().containsKey(playerKey + ".x")) {
+        if(!LocationsManager.existsHome(player.getName().getString(), homeName)) {
+            return false; // Home doesn't exist
+        }
+        Location location = LocationsManager.getHome(player.getName().getString(), homeName);
+        if (location == null) {
             return false; // Home not found
         }
-        if (!config.getConfig().containsKey(playerKey + ".dimension")) {
-            player.sendMessage(new TextComponent("Please set this Home again."), Util.NIL_UUID);
-            int x = config.getConfig().getInt(playerKey + ".x");
-            int y = config.getConfig().getInt(playerKey + ".y");
-            int z = config.getConfig().getInt(playerKey + ".z");
-            player.teleportTo(x, y, z);
-            player.sendMessage(new TextComponent("The Home you set is Invalid. Teleporting to Coordinates in the Overworld!"), Util.NIL_UUID);
-            return true; // Successfully teleported
-        }
-        String dimensionName = config.getConfig().getString(playerKey + ".dimension");
-        int x = config.getConfig().getInt(playerKey + ".x");
-        int y = config.getConfig().getInt(playerKey + ".y");
-        int z = config.getConfig().getInt(playerKey + ".z");
-        ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimensionName));
-        if (player.getServer() == null) {
-            return false; // Server not found
-        }
-        ServerLevel targetLevel = player.getServer().getLevel(dimension);
-        if (targetLevel != null) {
-            player.teleportTo(targetLevel, x, y, z, 0, 0);
-            return true; // Successfully teleported
-        }
-        return false;
+        player.teleportTo(location.getServerLevel(player), location.getX(), location.getY(), location.getZ(), 0, 0);
+        return true;
     }
 
     private static List<String> getAllHomes(Player player) {

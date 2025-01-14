@@ -14,6 +14,8 @@ package ch.framedev.essentialsmod.utils;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 public class Location {
@@ -60,7 +62,12 @@ public class Location {
         this.z = z;
     }
 
-    public ResourceKey<Level> getLevel() {
+    public ResourceKey<Level> getDimensionResource() {
         return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension));
+    }
+
+    public ServerLevel getServerLevel(ServerPlayer serverPlayer) {
+        if(serverPlayer.getServer() == null) return null;
+        return dimension!= null? serverPlayer.getServer().getLevel(getDimensionResource()) : null;
     }
 }

@@ -1,10 +1,7 @@
 package ch.framedev.essentialsmod;
 
 import ch.framedev.essentialsmod.commands.*;
-import ch.framedev.essentialsmod.events.BackEventHandler;
-import ch.framedev.essentialsmod.events.ChatEventHandler;
-import ch.framedev.essentialsmod.events.InventorySyncHandler;
-import ch.framedev.essentialsmod.events.PlayerJoinEvent;
+import ch.framedev.essentialsmod.events.*;
 import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.logging.LogUtils;
 import net.minecraft.commands.Commands;
@@ -65,7 +62,7 @@ public class EssentialsMod {
 
     private void setup(final FMLCommonSetupEvent event) {
         // some pre-init code
-        LOGGER.info("HELLO FROM PREINIT");
+        LOGGER.info("HELLO FROM PRE INIT");
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {

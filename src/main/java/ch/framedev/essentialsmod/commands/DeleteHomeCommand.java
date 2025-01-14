@@ -60,7 +60,11 @@ public class DeleteHomeCommand {
         if (!config.getConfig().containsKey(playerKey + ".x")) {
             return false; // Home not found
         }
-        config.getConfig().set(playerKey, "null");
+        Map<String, Object> homeMap = config.getConfig().getMap("home." + player.getName().getString());
+        if(homeMap != null) {
+            homeMap.remove(homeName);
+        }
+        config.getConfig().set("home." + player.getName().getString(), homeMap);
         config.getConfig().save();
         return true; // Successfully teleported
     }

@@ -1,7 +1,7 @@
 package ch.framedev.essentialsmod.commands;
 
-import ch.framedev.essentialsmod.utils.Config;
 import ch.framedev.essentialsmod.utils.ChatUtils;
+import ch.framedev.essentialsmod.utils.Location;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -27,13 +27,8 @@ public class SetHomeCommand {
             String playerName = player.getName().getString();
             TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Home set with name", "\"" + home + "\""}, new String[]{"§a", "§b"});
             player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
-            Config config = new Config();
             String dimension = player.level.dimension().location().toString();
-            config.getConfig().set("home." + playerName + "."+home+".dimension", dimension);
-            config.getConfig().set("home." + playerName + "." + home + ".x", player.getBlockX());
-            config.getConfig().set("home." + playerName + "." + home + ".y", player.getBlockY());
-            config.getConfig().set("home." + playerName + "." + home + ".z", player.getBlockZ());
-            config.getConfig().save();
+            LocationsManager.setHome(playerName, new Location(dimension, player.getBlockX(), player.getBlockY(), player.getBlockZ()), home);
         }
         return Command.SINGLE_SUCCESS;
     }
@@ -42,13 +37,8 @@ public class SetHomeCommand {
         if (command.getSource().getEntity() instanceof Player player) {
             String playerName = player.getName().getString();
             player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Home Set").withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
-            Config config = new Config();
             String dimension = player.level.dimension().location().toString();
-            config.getConfig().set("home." + playerName + ".home.dimension", dimension);
-            config.getConfig().set("home." + playerName + ".home.x", player.getBlockX());
-            config.getConfig().set("home." + playerName + ".home.y", player.getBlockY());
-            config.getConfig().set("home." + playerName + ".home.z", player.getBlockZ());
-            config.getConfig().save();
+            LocationsManager.setHome(playerName, new Location(dimension, player.getBlockX(), player.getBlockY(), player.getBlockZ()), null);
         }
         return Command.SINGLE_SUCCESS;
     }
