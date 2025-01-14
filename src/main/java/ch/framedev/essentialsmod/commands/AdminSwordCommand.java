@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -41,7 +42,7 @@ public class AdminSwordCommand {
 
             itemStack.enchant(Enchantments.SHARPNESS, 126);
             player.getInventory().add(itemStack);
-            command.getSource().sendSuccess(new TextComponent("You successfully got the Admin Sword!"), true);
+            command.getSource().sendSuccess(ChatUtils.getPrefix().append(new TextComponent("You successfully got the Admin Sword!")), true);
             return 1;
         }
         return 0;

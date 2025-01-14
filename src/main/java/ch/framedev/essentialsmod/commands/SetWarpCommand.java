@@ -1,6 +1,7 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -35,7 +36,18 @@ public class SetWarpCommand {
             config.getConfig().save();
 
             // Feedback to the player
-            serverPlayer.sendMessage(new TextComponent("Warp \"" + warpName + "\" successfully set at your current location!"), Util.NIL_UUID);
+            String[] messages = new String[]{
+                    "Warp",
+                    "\"" + warpName + "\"",
+                    "successfully set at your current location!"
+            };
+            String[] formatting = new String[]{
+                    "§a",
+                    "§b",
+                    "§a",
+            };
+            TextComponent textComponent = ChatUtils.getTextComponent(messages, formatting);
+            serverPlayer.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
             return 1; // Indicate success
         }
 

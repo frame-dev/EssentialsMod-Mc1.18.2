@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -30,7 +31,9 @@ public class DeleteHomeCommand {
         if (context.getSource().getEntity() instanceof Player player) {
             String homeName = StringArgumentType.getString(context, "homeName");
             if (deleteHome(player, homeName)) {
-                player.sendMessage(new TextComponent("Home: " + homeName + " Deleted!"), Util.NIL_UUID);
+                TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Home:",homeName,"Deleted!"},
+                        new String[]{"§a","§b","§a"});
+                player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
             } else {
                 player.sendMessage(new TextComponent("Home not found: " + homeName).withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
@@ -41,7 +44,9 @@ public class DeleteHomeCommand {
     private static int executeDefault(CommandContext<CommandSourceStack> context) {
         if (context.getSource().getEntity() instanceof Player player) {
             if (deleteHome(player, "home")) {
-                player.sendMessage(new TextComponent("Default home deleted!"), Util.NIL_UUID);
+                TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Default", "home Deleted!"},
+                        new String[]{"§b","§a"});
+                player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
             } else {
                 player.sendMessage(new TextComponent("No default home set!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }

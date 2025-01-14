@@ -1,6 +1,7 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -35,15 +36,17 @@ public class MuteCommand {
         if (targetPlayer != null) {
             if (mutedPlayers.contains(playerName)) {
                 mutedPlayers.remove(playerName); // Unmute the player
-                source.sendSuccess(new TextComponent(playerName + " has been unmuted."), true);
-                targetPlayer.sendMessage(new TextComponent("You have been unmuted by an admin."), Util.NIL_UUID);
+                TextComponent textComponent = ChatUtils.getTextComponent(new String[]{playerName, "has been unmuted."}, new String[]{"§b","§a"});
+                source.sendSuccess(textComponent, true);
+                targetPlayer.sendMessage(new TextComponent("You have been unmuted by an admin.").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
                 Config config = new Config();
                 config.getConfig().set("muted", mutedPlayers.stream().toList());
                 config.getConfig().save();
             } else {
                 mutedPlayers.add(playerName); // Mute the player
-                source.sendSuccess(new TextComponent(playerName + " has been muted."), true);
-                targetPlayer.sendMessage(new TextComponent("You have been muted by an admin."), Util.NIL_UUID);
+                TextComponent textComponent = ChatUtils.getTextComponent(new String[]{playerName, "has been muted."}, new String[]{"§b","§a"});
+                source.sendSuccess(textComponent, true);
+                targetPlayer.sendMessage(new TextComponent("You have been muted by an admin.").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
                 Config config = new Config();
                 config.getConfig().set("muted", mutedPlayers.stream().toList());
                 config.getConfig().save();

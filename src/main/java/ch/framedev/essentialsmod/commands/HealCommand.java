@@ -4,6 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -27,7 +28,7 @@ public class HealCommand {
             player.setHealth(maxHealth); // Set the player's health to maximum
             player.getFoodData().setFoodLevel(20); // Fully restore the hunger bar
             player.getFoodData().setSaturation(5.0F); // Set saturation for full hunger
-            player.sendMessage(new TextComponent("You have been fully healed!"), Util.NIL_UUID); // Feedback to player
+            player.sendMessage(new TextComponent("You have been fully healed!").withStyle(ChatFormatting.GREEN), Util.NIL_UUID); // Feedback to player
             return 1; // Indicate success
         }
         return 0; // Indicate failure (not executed by a player)

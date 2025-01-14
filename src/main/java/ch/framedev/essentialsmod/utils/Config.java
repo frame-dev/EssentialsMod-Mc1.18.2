@@ -26,7 +26,9 @@ public class Config {
         this.config.load();
         if (!config.containsKey("back")) {
             this.config.set("back", true);
+            this.config.set("useConfigForHomes", true);
             this.config.save();
+            EssentialsMod.getLOGGER().info("Back enabled by default in config.");
         }
     }
 

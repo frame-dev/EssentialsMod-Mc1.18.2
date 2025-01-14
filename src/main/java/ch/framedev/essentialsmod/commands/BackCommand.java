@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -30,15 +31,15 @@ public class BackCommand {
                 if (backMap.containsKey(serverPlayer)) {
                     Vec3 vec3 = backMap.get(serverPlayer);
                     serverPlayer.teleportTo(vec3.x, vec3.y, vec3.z);
-                    serverPlayer.sendMessage(new TextComponent("You have been teleported back to your Death Location!").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+                    serverPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("You have been teleported back to your Death Location!").withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
                     return 1;
                 } else {
-                    serverPlayer.sendMessage(new TextComponent("Your Death Location can't be found!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    serverPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Your Death Location can't be found!").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
                     return 0;
                 }
             } else {
                 if (serverPlayer.hasPermissions(2))
-                    serverPlayer.sendMessage(new TextComponent("Teleportation back is disabled in the config!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                    serverPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Teleportation back is disabled in the config!").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
                 return 0;
             }
         }

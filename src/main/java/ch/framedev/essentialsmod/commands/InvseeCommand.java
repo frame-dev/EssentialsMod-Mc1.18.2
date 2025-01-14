@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -44,8 +45,8 @@ public class InvseeCommand {
                 openPlayerInventory(currentPlayer, targetPlayer);
             } else {
                 currentPlayer.sendMessage(
-                        new TextComponent("Player \"" + playerName + "\" is not online.")
-                                .withStyle(ChatFormatting.RED),
+                        ChatUtils.getPrefix().append(new TextComponent("Player \"" + playerName + "\" is not online.")
+                                .withStyle(ChatFormatting.RED)),
                         Util.NIL_UUID
                 );
             }

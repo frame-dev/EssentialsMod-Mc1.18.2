@@ -1,6 +1,7 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -36,7 +37,9 @@ public class HomeCommand {
         if (context.getSource().getEntity() instanceof ServerPlayer player) {
             String homeName = StringArgumentType.getString(context, "homeName");
             if (teleportToHome(player, homeName)) {
-                player.sendMessage(new TextComponent("Teleported to home: " + homeName), Util.NIL_UUID);
+                TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Teleported to home:", homeName},
+                        new String[]{"§a","§b"});
+                player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
             } else {
                 player.sendMessage(new TextComponent("Home not found: " + homeName).withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }
@@ -47,7 +50,9 @@ public class HomeCommand {
     private static int executeDefault(CommandContext<CommandSourceStack> context) {
         if (context.getSource().getEntity() instanceof ServerPlayer player) {
             if (teleportToHome(player, "home")) {
-                player.sendMessage(new TextComponent("Teleported to your default home!"), Util.NIL_UUID);
+                TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Teleported to your","default", "home"},
+                        new String[]{"§a","§b","§a"});
+                player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
             } else {
                 player.sendMessage(new TextComponent("No default home set!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
             }

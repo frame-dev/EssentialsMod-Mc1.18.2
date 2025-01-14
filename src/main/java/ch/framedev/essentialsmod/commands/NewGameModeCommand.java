@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -11,6 +12,9 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewGameModeCommand {
 
@@ -53,11 +57,12 @@ public class NewGameModeCommand {
         GameType gameType = getGameTypeFromString(mode);
         if (gameType == null) {
             context.getSource().sendFailure(new TextComponent("Invalid game mode: " + mode).withStyle(ChatFormatting.RED));
+            context.getSource().sendFailure(new TextComponent("Available game modes: " + String.join(", ", gameModeList)));
             return 0;
         }
 
         player.setGameMode(gameType);
-        context.getSource().sendSuccess(new TextComponent("Your game mode has been changed to " + gameType.getName()).withStyle(ChatFormatting.GOLD), true);
+        context.getSource().sendSuccess(ChatUtils.getPrefix().append(new TextComponent("Your game mode has been changed to " + gameType.getName()).withStyle(ChatFormatting.GOLD)), true);
         return 1;
     }
 
@@ -73,13 +78,14 @@ public class NewGameModeCommand {
 
         GameType gameType = getGameTypeFromString(mode);
         if (gameType == null) {
-            context.getSource().sendFailure(new TextComponent("Invalid game mode: " + mode).withStyle(ChatFormatting.RED));
+            context.getSource().sendFailure(ChatUtils.getPrefix().append(new TextComponent("Invalid game mode: " + mode).withStyle(ChatFormatting.RED)));
+            context.getSource().sendFailure(ChatUtils.getPrefix().append(new TextComponent("Available game modes: " + String.join(", ", gameModeList))));
             return 0;
         }
 
         targetPlayer.setGameMode(gameType);
-        context.getSource().sendSuccess(new TextComponent("Changed " + targetName + "'s game mode to " + gameType.getName()).withStyle(ChatFormatting.GOLD), true);
-        targetPlayer.sendMessage(new TextComponent("Your game mode has been changed to " + gameType.getName()).withStyle(ChatFormatting.GREEN), targetPlayer.getUUID());
+        context.getSource().sendSuccess(ChatUtils.getPrefix().append(new TextComponent("Changed " + targetName + "'s game mode to " + gameType.getName()).withStyle(ChatFormatting.GOLD)), true);
+        targetPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Your game mode has been changed to " + gameType.getName()).withStyle(ChatFormatting.GREEN)), targetPlayer.getUUID());
         return 1;
     }
 
@@ -92,4 +98,10 @@ public class NewGameModeCommand {
             default -> null;
         };
     }
+
+    private static final List<String> gameModeList = new ArrayList<>(
+            List.of("s", "0", "survival",
+                    "c", "1", "creative",
+                    "a", "2", "adventure",
+                    "sp", "3", "spectator"));
 }

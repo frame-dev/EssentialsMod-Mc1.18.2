@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -25,7 +26,7 @@ public class FlyCommand {
         String playerName = StringArgumentType.getString(command, "playerName");
         ServerPlayer player = command.getSource().getServer().getPlayerList().getPlayerByName(playerName);
         if(player == null) {
-            command.getSource().sendFailure(new TextComponent("Player not found!"));
+            command.getSource().sendFailure(ChatUtils.getPrefix().append(new TextComponent("Player not found!")));
             return 0;
         }
         if (player.getAbilities().mayfly) {
@@ -33,22 +34,22 @@ public class FlyCommand {
             player.getAbilities().mayfly = false;
             player.getAbilities().flying = false;
             player.onUpdateAbilities();
-            player.sendMessage(new TextComponent("Flying disabled."), player.getUUID());
-            command.getSource().sendSuccess(new TextComponent("Flying for " + player.getGameProfile().getName() + " is disabled"), true);
+            player.sendMessage(getTextByStatus(false), player.getUUID());
+            command.getSource().sendSuccess(ChatUtils.getPrefix().append(getTextByStatusOther(false, player.getGameProfile().getName())), true);
         } else {
             // Enable flying
             player.getAbilities().mayfly = true;
             player.getAbilities().flying = true;
             player.onUpdateAbilities();
-            player.sendMessage(new TextComponent("Flying enabled!"), player.getUUID());
-            command.getSource().sendSuccess(new TextComponent("Flying for " + player.getGameProfile().getName() + " is enabled"), true);
+            player.sendMessage(getTextByStatus(true), player.getUUID());
+            command.getSource().sendSuccess(ChatUtils.getPrefix().append(getTextByStatusOther(true, player.getGameProfile().getName())), true);
         }
         return 1;
     }
 
     private static int executeDefault(CommandContext<CommandSourceStack> command) {
         if(!(command.getSource().getEntity() instanceof ServerPlayer player)) {
-            command.getSource().sendFailure(new TextComponent("Only Player can execute this command!").withStyle(ChatFormatting.RED));
+            command.getSource().sendFailure(ChatUtils.getPrefix().append(new TextComponent("Only Player can execute this command!").withStyle(ChatFormatting.RED)));
             return 0;
         }
         if (player.getAbilities().mayfly) {
@@ -56,16 +57,33 @@ public class FlyCommand {
             player.getAbilities().mayfly = false;
             player.getAbilities().flying = false;
             player.onUpdateAbilities();
-            player.sendMessage(new TextComponent("Flying disabled."), player.getUUID());
+            player.sendMessage(ChatUtils.getPrefix().append(getTextByStatus(false)), player.getUUID());
         } else {
             // Enable flying
             player.getAbilities().mayfly = true;
             player.getAbilities().flying = true;
             player.onUpdateAbilities();
-            player.sendMessage(new TextComponent("Flying enabled!"), player.getUUID());
+            player.sendMessage(ChatUtils.getPrefix().append(getTextByStatus(true)), player.getUUID());
         }
         return 1; // Indicate success
     }
+
+    private static TextComponent getTextByStatus(boolean active) {
+        if(active) {
+            return ChatUtils.getTextComponent(new String[]{"Flying","enabled!"}, new String[]{"§a","§6"});
+        } else {
+            return ChatUtils.getTextComponent(new String[]{"Flying","disabled!"}, new String[]{"§a","§6"});
+        }
+    }
+
+    private static TextComponent getTextByStatusOther(boolean active, String playerName) {
+        if(active) {
+            return ChatUtils.getTextComponent(new String[]{"Flying for",playerName,"is","enabled!"}, new String[]{"§a","§6","§a","§6"});
+        } else {
+            return ChatUtils.getTextComponent(new String[]{"Flying for",playerName,"is","disabled!"}, new String[]{"§a","§6","§a","§6"});
+        }
+    }
+
 
     private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {

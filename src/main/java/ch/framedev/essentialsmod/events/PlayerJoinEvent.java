@@ -14,6 +14,7 @@ public class PlayerJoinEvent {
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+            if (player.getServer() == null) return;
             if (VanishCommand.vanishList.contains(player.getName().getString()))
                 for (ServerPlayer otherPlayer : player.getServer().getPlayerList().getPlayers()) {
                     if (otherPlayer != player && !VanishCommand.vanishList.contains(otherPlayer.getName().getString()) && !otherPlayer.hasPermissions(2)) {

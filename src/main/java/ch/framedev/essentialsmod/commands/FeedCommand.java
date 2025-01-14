@@ -30,7 +30,7 @@ public class FeedCommand {
             player.getFoodData().setSaturation(5.0F);
 
             // Send feedback to the player
-            player.sendMessage(new TextComponent("Your food bar has been fully replenished!"), Util.NIL_UUID);
+            player.sendMessage(new TextComponent("Your food bar has been fully replenished!").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
 
             return 1; // Indicate success
         }

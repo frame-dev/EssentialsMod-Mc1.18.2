@@ -1,10 +1,12 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -23,7 +25,8 @@ public class SetHomeCommand {
         String home = StringArgumentType.getString(command, "homeName");
         if (command.getSource().getEntity() instanceof Player player) {
             String playerName = player.getName().getString();
-            player.sendMessage(new TextComponent("Home Set with name " + home), Util.NIL_UUID);
+            TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Home set with name", "\"" + home + "\""}, new String[]{"§a", "§b"});
+            player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
             Config config = new Config();
             String dimension = player.level.dimension().location().toString();
             config.getConfig().set("home." + playerName + "."+home+".dimension", dimension);
@@ -38,7 +41,7 @@ public class SetHomeCommand {
     private static int execute(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof Player player) {
             String playerName = player.getName().getString();
-            player.sendMessage(new TextComponent("Home Set"), Util.NIL_UUID);
+            player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Home Set").withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
             Config config = new Config();
             String dimension = player.level.dimension().location().toString();
             config.getConfig().set("home." + playerName + ".home.dimension", dimension);

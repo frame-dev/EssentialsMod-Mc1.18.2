@@ -1,6 +1,7 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -37,10 +38,12 @@ public class WarpCommand {
             String warpName = command.getArgument("warpName", String.class);
 
             if (teleportToWarp(player, warpName)) {
-                player.sendMessage(new TextComponent("Teleported to warp \"" + warpName + "\"."), Util.NIL_UUID);
+                TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Teleported to warp ", "\"" + warpName + "\"", "."},
+                        new String[]{"§a","§b","§a"});
+                player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
                 return 1; // Success
             } else {
-                player.sendMessage(new TextComponent("Warp \"" + warpName + "\" not found.").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Warp \"" + warpName + "\" not found.").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
                 return 0; // Failure
             }
         } catch (CommandSyntaxException e) {
