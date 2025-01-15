@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.EssentialsMod;
 import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -45,7 +46,7 @@ public class SetSpawnCommand {
 
                 return 1; // Indicate success
             } catch (Exception ex) {
-                ex.printStackTrace();
+                EssentialsMod.getLOGGER().error("Failed to set spawn.", ex);
                 player.sendMessage(new TextComponent("An error occurred while setting the world spawn."), Util.NIL_UUID);
                 return 0; // Indicate failure
             }

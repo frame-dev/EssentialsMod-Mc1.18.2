@@ -64,10 +64,20 @@ public class EssentialsConfigScreen extends Screen {
 
             @Override
             protected void applyValue() {
-                int limit = (int) (this.value * 100); // Scale back to 1 - 100 range
+                int limit = (int) (this.value * 100); // Scale back to 1-100 range
                 EssentialsConfig.limitForHomes.set(limit);
             }
         });
+
+        // Checkbox for enabling Mute Player for themselves.
+        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 130, 200, 20,
+                new TextComponent("Enable Mute Other Player for themselves: " + (EssentialsConfig.muteOtherPlayeForSelf.get() ? "On" : "Off")),
+                button -> {
+                    boolean newValue = !EssentialsConfig.muteOtherPlayeForSelf.get();
+                    EssentialsConfig.muteOtherPlayeForSelf.set(newValue);
+                    button.setMessage(new TextComponent("Enable Mute Other Player for themselves: " + (newValue ? "On" : "Off")));
+                }));
+
 
         // "Done" button to return to the parent screen
         this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 160, 200, 20,

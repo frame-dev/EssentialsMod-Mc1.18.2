@@ -35,7 +35,7 @@ public class HomeCommand {
             String homeName = StringArgumentType.getString(context, "homeName");
             if (teleportToHome(player, homeName)) {
                 TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Teleported to home:", homeName},
-                        new String[]{"§a","§b"});
+                        new String[]{"§a", "§b"});
                 player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
             } else {
                 player.sendMessage(new TextComponent("Home not found: " + homeName).withStyle(ChatFormatting.RED), Util.NIL_UUID);
@@ -47,8 +47,8 @@ public class HomeCommand {
     private static int executeDefault(CommandContext<CommandSourceStack> context) {
         if (context.getSource().getEntity() instanceof ServerPlayer player) {
             if (teleportToHome(player, "home")) {
-                TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Teleported to your","default", "home"},
-                        new String[]{"§a","§b","§a"});
+                TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Teleported to your", "default", "home"},
+                        new String[]{"§a", "§b", "§a"});
                 player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);
             } else {
                 player.sendMessage(new TextComponent("No default home set!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
@@ -58,7 +58,7 @@ public class HomeCommand {
     }
 
     private static boolean teleportToHome(ServerPlayer player, String homeName) {
-        if(!LocationsManager.existsHome(player.getName().getString(), homeName)) {
+        if (!LocationsManager.existsHome(player.getName().getString(), homeName)) {
             return false; // Home doesn't exist
         }
         Location location = LocationsManager.getHome(player.getName().getString(), homeName);
@@ -76,7 +76,7 @@ public class HomeCommand {
             return new ArrayList<>();
         if (!defaultConfiguration.containsKey(player.getName().getString()))
             return new ArrayList<>();
-        Map<String, Object> configuration = (Map<String, Object>) defaultConfiguration.get(player.getName().getString());
+        @SuppressWarnings("unchecked") Map<String, Object> configuration = (Map<String, Object>) defaultConfiguration.get(player.getName().getString());
         if (configuration == null) {
             return new ArrayList<>();
         }

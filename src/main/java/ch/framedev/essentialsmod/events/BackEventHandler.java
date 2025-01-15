@@ -18,7 +18,7 @@ public class BackEventHandler {
         // Check if the dying entity is a player
         if (event.getEntity() instanceof ServerPlayer player) {
             if (!EssentialsConfig.useBack.get())
-                return;
+                return; // Back is Disabled no need to check
 
             Vec3 vec3 = new Vec3(player.getX(), player.getY(), player.getZ());
             BackCommand.backMap.put(player, vec3);

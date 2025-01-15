@@ -27,7 +27,7 @@ public class BackCommand {
     private static int execute(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof ServerPlayer serverPlayer) {
             if (!EssentialsConfig.useBack.get())
-                return 0; // Warps are disabled
+                return 0; // Back is disabled
 
             if (backMap.containsKey(serverPlayer)) {
                 Vec3 vec3 = backMap.get(serverPlayer);

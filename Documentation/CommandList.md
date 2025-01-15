@@ -118,3 +118,8 @@ This command toggles the invisibility of the specified player or yourself if no 
 This command teleports you to a predefined warp location.
 
 ---
+
+### **```/god <optional PlayerName>```**
+This command makes you invulnerable or a specific Player
+
+---

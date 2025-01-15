@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -54,6 +55,7 @@ public class EssentialsMod {
         MinecraftForge.EVENT_BUS.register(new InventorySyncHandler());
         MinecraftForge.EVENT_BUS.register(new BackEventHandler());
         MinecraftForge.EVENT_BUS.register(new ChatEventHandler());
+        MinecraftForge.EVENT_BUS.register(new MuteOtherPlayerCommand.ChatEventHandler());
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -99,9 +101,7 @@ public class EssentialsMod {
 
     private void processIMC(final InterModProcessEvent event) {
         // Some example code to receive and process InterModComms from other mods
-        LOGGER.info("Got IMC {}", event.getIMCStream().
-                map(m -> m.messageSupplier().get()).
-                collect(Collectors.toList()));
+        LOGGER.info("Got IMC {}", event.getIMCStream().map(m -> m.messageSupplier().get()).collect(Collectors.toList()));
     }
 
 
@@ -149,8 +149,7 @@ public class EssentialsMod {
 
         event.getDispatcher().register(HealCommand.register());
         event.getDispatcher().register(FeedCommand.register());
-        if (EssentialsConfig.useBack.get())
-            event.getDispatcher().register(BackCommand.register());
+        if (EssentialsConfig.useBack.get()) event.getDispatcher().register(BackCommand.register());
 
         event.getDispatcher().register(MuteCommand.register());
 
@@ -160,20 +159,18 @@ public class EssentialsMod {
             event.getDispatcher().register(SetWarpCommand.register());
         }
 
-        event.getDispatcher().register(new GodCommand().register());
-
-
-        event.getDispatcher().register(
-                Commands.literal("day")
-                        .requires(source -> source.hasPermission(2)) // Restrict to operators (level 2 or higher)
-                        .executes(context -> DayNightCommand.setDay(context.getSource()))
+        Set<ICommand> commandSet = new HashSet<>(
+                Set.of(new GodCommand(),
+                        new MuteOtherPlayerCommand())
         );
+        commandSet.forEach(command -> event.getDispatcher().register(command.register()));
 
-        event.getDispatcher().register(
-                Commands.literal("night")
-                        .requires(source -> source.hasPermission(2)) // Restrict to operators (level 2 or higher)
-                        .executes(context -> DayNightCommand.setNight(context.getSource()))
-        );
+
+        event.getDispatcher().register(Commands.literal("day").requires(source -> source.hasPermission(2)) // Restrict to operators (level 2 or higher)
+                .executes(context -> DayNightCommand.setDay(context.getSource())));
+
+        event.getDispatcher().register(Commands.literal("night").requires(source -> source.hasPermission(2)) // Restrict to operators (level 2 or higher)
+                .executes(context -> DayNightCommand.setNight(context.getSource())));
     }
 
     public static Logger getLOGGER() {

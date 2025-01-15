@@ -18,7 +18,7 @@ public class GodCommand implements ICommand {
                 .requires(source -> source.hasPermission(3))
                 .then(Commands.argument("playerName", StringArgumentType.word()) // String argument
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(this::executeWithContext)) // Executes when only message is provided
+                        .executes(this::executeWithContext)) // Executes when only a message is provided
                 .executes(this::execute); // Executes with no arg
     }
 

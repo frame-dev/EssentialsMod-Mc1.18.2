@@ -15,6 +15,7 @@ public class EssentialsConfig {
     public static final ForgeConfigSpec.BooleanValue useBack;
     public static final ForgeConfigSpec.BooleanValue enableLimitedHomes;
     public static final ForgeConfigSpec.IntValue limitForHomes;
+    public static final ForgeConfigSpec.BooleanValue muteOtherPlayeForSelf;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -36,6 +37,10 @@ public class EssentialsConfig {
         limitForHomes = builder
                 .comment("Limit the number of homes per player. Default Home will be ignored.")
                .defineInRange("limitForHomes", 5, 1, Integer.MAX_VALUE);
+
+        muteOtherPlayeForSelf = builder
+                .comment("Enable or disable the feature that allows players to mute other players for themselves.")
+                        .define("muteOtherPlayerForSelf", true);
 
         builder.pop();
 

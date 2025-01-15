@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -28,7 +29,7 @@ public class HealCommand {
             player.setHealth(maxHealth); // Set the player's health to maximum
             player.getFoodData().setFoodLevel(20); // Fully restore the hunger bar
             player.getFoodData().setSaturation(5.0F); // Set saturation for full hunger
-            player.sendMessage(new TextComponent("You have been fully healed!").withStyle(ChatFormatting.GREEN), Util.NIL_UUID); // Feedback to player
+            player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("You have been fully healed!").withStyle(ChatFormatting.GREEN)), Util.NIL_UUID); // Feedback to player
             return 1; // Indicate success
         }
         return 0; // Indicate failure (not executed by a player)
@@ -48,15 +49,25 @@ public class HealCommand {
             targetPlayer.getFoodData().setSaturation(5.0F); // Set saturation for full hunger
 
             // Send feedback to the target player
-            targetPlayer.sendMessage(new TextComponent("You have been healed by " + command.getSource().getDisplayName().getString() + "!"), Util.NIL_UUID);
+            TextComponent otherTextComponent = ChatUtils.getTextComponent(
+                    new String[]{
+                            "You have been healed by",
+                            command.getSource().getDisplayName().getString(),
+                            "!"
+                    }, new String[]{"§a","§b","§a"});
+            targetPlayer.sendMessage(ChatUtils.getPrefix().append(otherTextComponent), Util.NIL_UUID);
 
             // Send feedback to the command source
-            command.getSource().sendSuccess(new TextComponent("Healed " + targetPlayer.getName().getString()), true);
+            TextComponent textComponent = ChatUtils.getTextComponent(new String[]{
+                    "Healed",
+                    targetPlayer.getGameProfile().getName()
+            }, new String[]{"§a","§b"});
+            command.getSource().sendSuccess(ChatUtils.getPrefix().append(textComponent), true);
 
             return 1; // Indicate success
         } else {
             // Target player not found
-            command.getSource().sendFailure(new TextComponent("Player not found: " + playerName));
+            command.getSource().sendFailure(ChatUtils.getPrefix().append(new TextComponent("Player not found: " + playerName).withStyle(ChatFormatting.RED)));
             return 0; // Indicate failure
         }
     }

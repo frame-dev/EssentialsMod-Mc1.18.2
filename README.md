@@ -110,7 +110,7 @@ This command teleports you to the world spawn location.
 
 ---
 
-### **```/tpa <PlayerName|accept|deny)>```**
+### **```/tpa <PlayerName|accept|deny>```**
 This command allows players to request teleportation to another player and accept or deny incoming requests.
 
 ---
@@ -127,6 +127,11 @@ This command toggles the invisibility of the specified player or yourself if no 
 
 ### **```/warp <Warp Name>```**
 This command teleports you to a predefined warp location.
+
+---
+
+### **```/god <optional PlayerName>```**
+This command makes you invulnerable or a specific Player
 
 ---
 
