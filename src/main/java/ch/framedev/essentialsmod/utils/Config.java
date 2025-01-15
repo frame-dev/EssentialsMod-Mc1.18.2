@@ -4,6 +4,7 @@ import ch.framedev.essentialsmod.EssentialsMod;
 import ch.framedev.yamlutils.FileConfiguration;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +15,7 @@ public class Config {
     public Config() {
         if (!EssentialsMod.configFile.exists()) {
             if (!EssentialsMod.configFile.getParentFile().mkdirs())
-                throw new RuntimeException("Failed to create directory for config.");
+                EssentialsMod.getLOGGER().warn("Could not create config Directory");
             try {
                 if (!EssentialsMod.configFile.createNewFile())
                     throw new RuntimeException("Failed to create config file.");
@@ -88,6 +89,20 @@ public class Config {
 
     public void save() {
         config.save();
+    }
+
+    public Map<String, Object> getWarpConfig() {
+        return getConfig().getMap("warp");
+    }
+
+    @SuppressWarnings("unchecked")
+    public Map<String,Object> getHomeConfig(String playerName) {
+        Map<String, Object> defaultConfiguration = getConfig().getMap("home");
+        if (defaultConfiguration == null)
+            return null;
+        if (!defaultConfiguration.containsKey(playerName))
+            return null;
+        return (Map<String, Object>) defaultConfiguration.get(playerName);
     }
 
     public FileConfiguration getConfig() {

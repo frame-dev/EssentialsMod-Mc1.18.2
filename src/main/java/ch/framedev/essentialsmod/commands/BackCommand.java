@@ -1,7 +1,7 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.ChatUtils;
-import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.utils.EssentialsConfig;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.ChatFormatting;
@@ -26,20 +26,16 @@ public class BackCommand {
 
     private static int execute(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof ServerPlayer serverPlayer) {
-            Config config = new Config();
-            if (config.getConfig().containsKey("back") && config.getConfig().getBoolean("back")) {
-                if (backMap.containsKey(serverPlayer)) {
-                    Vec3 vec3 = backMap.get(serverPlayer);
-                    serverPlayer.teleportTo(vec3.x, vec3.y, vec3.z);
-                    serverPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("You have been teleported back to your Death Location!").withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
-                    return 1;
-                } else {
-                    serverPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Your Death Location can't be found!").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
-                    return 0;
-                }
+            if (!EssentialsConfig.useBack.get())
+                return 0; // Warps are disabled
+
+            if (backMap.containsKey(serverPlayer)) {
+                Vec3 vec3 = backMap.get(serverPlayer);
+                serverPlayer.teleportTo(vec3.x, vec3.y, vec3.z);
+                serverPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("You have been teleported back to your Death Location!").withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
+                return 1;
             } else {
-                if (serverPlayer.hasPermissions(2))
-                    serverPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Teleportation back is disabled in the config!").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
+                serverPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Your Death Location can't be found!").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
                 return 0;
             }
         }

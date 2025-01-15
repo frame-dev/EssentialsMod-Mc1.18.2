@@ -1,7 +1,9 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.ChatUtils;
+import ch.framedev.essentialsmod.utils.EssentialsConfig;
 import ch.framedev.essentialsmod.utils.Location;
+import ch.framedev.essentialsmod.utils.LocationsManager;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -24,6 +26,13 @@ public class SetHomeCommand {
     private static int executeWithContext(CommandContext<CommandSourceStack> command) {
         String home = StringArgumentType.getString(command, "homeName");
         if (command.getSource().getEntity() instanceof Player player) {
+            if (EssentialsConfig.enableLimitedHomes.get()) {
+                int limit = EssentialsConfig.limitForHomes.get();
+                if (LocationsManager.getHomes(player.getName().getString(), true).size() >= limit) {
+                    player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("You have reached the maximum number of homes (" + limit + ").").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
+                    return 0;
+                }
+            }
             String playerName = player.getName().getString();
             TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Home set with name", "\"" + home + "\""}, new String[]{"§a", "§b"});
             player.sendMessage(ChatUtils.getPrefix().append(textComponent), Util.NIL_UUID);

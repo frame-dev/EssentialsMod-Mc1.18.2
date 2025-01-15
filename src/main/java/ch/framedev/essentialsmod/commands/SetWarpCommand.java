@@ -1,8 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
-import ch.framedev.essentialsmod.utils.Config;
-import ch.framedev.essentialsmod.utils.ChatUtils;
-import ch.framedev.essentialsmod.utils.Location;
+import ch.framedev.essentialsmod.utils.*;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -22,8 +20,10 @@ public class SetWarpCommand {
     }
 
     private static int execute(CommandContext<CommandSourceStack> command) {
+        if (!EssentialsConfig.enableWarps.get())
+            return 0; // Warps are disabled
+
         String warpName = command.getArgument("warpName", String.class);
-        Config config = new Config();
 
         if (command.getSource().getEntity() instanceof ServerPlayer serverPlayer) {
             String dimension = serverPlayer.level.dimension().location().toString();

@@ -3,20 +3,25 @@ package ch.framedev.essentialsmod;
 import ch.framedev.essentialsmod.commands.*;
 import ch.framedev.essentialsmod.events.*;
 import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.utils.EssentialsConfig;
 import com.mojang.logging.LogUtils;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.loading.FileUtils;
 import org.slf4j.Logger;
@@ -27,6 +32,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
+
 @SuppressWarnings("InstantiationOfUtilityClass")
 @Mod("essentials")
 public class EssentialsMod {
@@ -52,11 +58,29 @@ public class EssentialsMod {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
-        Path path = FileUtils.getOrCreateDirectory(FMLPaths.CONFIGDIR.get().resolve("essentials"), "essentials");
-        configFile = new File(path.toFile(), "config.yml");
+        // Set up the path to the custom directory inside the config folder
+        Path essentialsConfigDir = FMLPaths.CONFIGDIR.get().resolve("essentials");
+
+// Ensure the directory exists
+        FileUtils.getOrCreateDirectory(essentialsConfigDir, "essentials");
+
+// Define the full path for the essentials-common.toml file
+        Path configPath = essentialsConfigDir.resolve("essentials-common.toml");
+        configFile = new File(essentialsConfigDir.toFile(), "config.yml");
+
+// Register the config with Forge
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EssentialsConfig.COMMON_CONFIG, "essentials/essentials-common.toml");
+
+
+        EssentialsConfig.loadConfig(EssentialsConfig.COMMON_CONFIG, configPath);
+
         Config config = new Config();
-        if(config.getConfig().getData().containsKey("muted")) {
+        if (config.getConfig().getData().containsKey("muted")) {
             MuteCommand.mutedPlayers = new HashSet<>(config.getConfig().getStringList("muted"));
+        }
+
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            EssentialsConfigScreen.EssentialsModClient.registerConfigGui();
         }
     }
 
@@ -125,14 +149,18 @@ public class EssentialsMod {
 
         event.getDispatcher().register(HealCommand.register());
         event.getDispatcher().register(FeedCommand.register());
-
-        event.getDispatcher().register(BackCommand.register());
+        if (EssentialsConfig.useBack.get())
+            event.getDispatcher().register(BackCommand.register());
 
         event.getDispatcher().register(MuteCommand.register());
 
-        event.getDispatcher().register(WarpCommand.register());
-        event.getDispatcher().register(DeleteWarpCommand.register());
-        event.getDispatcher().register(SetWarpCommand.register());
+        if (EssentialsConfig.enableWarps.get()) {
+            event.getDispatcher().register(WarpCommand.register());
+            event.getDispatcher().register(DeleteWarpCommand.register());
+            event.getDispatcher().register(SetWarpCommand.register());
+        }
+
+        event.getDispatcher().register(new GodCommand().register());
 
 
         event.getDispatcher().register(

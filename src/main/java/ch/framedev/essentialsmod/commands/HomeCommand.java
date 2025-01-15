@@ -3,6 +3,7 @@ package ch.framedev.essentialsmod.commands;
 import ch.framedev.essentialsmod.utils.Config;
 import ch.framedev.essentialsmod.utils.ChatUtils;
 import ch.framedev.essentialsmod.utils.Location;
+import ch.framedev.essentialsmod.utils.LocationsManager;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

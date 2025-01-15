@@ -2,6 +2,7 @@ package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.Config;
 import ch.framedev.essentialsmod.utils.ChatUtils;
+import ch.framedev.essentialsmod.utils.EssentialsConfig;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -33,6 +34,9 @@ public class WarpCommand {
     }
 
     private static int execute(CommandContext<CommandSourceStack> command) {
+        if (!EssentialsConfig.enableWarps.get())
+            return 0; // Warps are disabled
+
         try {
             ServerPlayer player = command.getSource().getPlayerOrException();
             String warpName = command.getArgument("warpName", String.class);

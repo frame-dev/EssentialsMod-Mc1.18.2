@@ -1,4 +1,4 @@
-package ch.framedev.essentialsmod.commands;
+package ch.framedev.essentialsmod.utils;
 
 
 
@@ -11,10 +11,12 @@ package ch.framedev.essentialsmod.commands;
  * This Class was created at 13.01.2025 23:18
  */
 
-import ch.framedev.essentialsmod.utils.Config;
-import ch.framedev.essentialsmod.utils.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class LocationsManager {
 
@@ -111,5 +113,35 @@ public class LocationsManager {
         int y = config.getConfig().getInt(saveKey + home + ".y");
         int z = config.getConfig().getInt(saveKey + home + ".z");
         return new Location(dimension, x, y, z);
+    }
+
+    public static List<String> getWarps() {
+        Config config = new Config();
+        Map<String, Object> warps = config.getConfig().getMap("warp");
+        if (warps == null) return new ArrayList<>();
+        return new ArrayList<>(warps.keySet());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<String> getHomes(String playerName, boolean ignoreDefault) {
+        Config config = new Config();
+        Map<String, Object> defaultConfiguration = config.getConfig().getMap("home");
+        if (defaultConfiguration == null)
+            return new ArrayList<>();
+        if (!defaultConfiguration.containsKey(playerName))
+            return new ArrayList<>();
+        Map<String, Object> configuration = (Map<String, Object>) defaultConfiguration.get(playerName);
+        if (configuration == null) {
+            return new ArrayList<>();
+        }
+        List<String> homes = new ArrayList<>();
+        for (String home : configuration.keySet()) {
+            if (home != null && !"null".equalsIgnoreCase(String.valueOf(configuration.get(home)))) {
+                if (!(ignoreDefault && "home".equalsIgnoreCase(home))) {
+                    homes.add(home);
+                }
+            }
+        }
+        return homes;
     }
 }
