@@ -140,6 +140,16 @@ This command makes you invulnerable or a specific Player
 
 ---
 
+## Build by yourself
+
+``` bash
+git clone https://github.com/frame-dev/EssentialsMod-Mc1.18.2-Forge.git
+cd EssentialsMod-Mc1.18.2-Forge
+./gradlew jar
+```
+
+The Jar is located in the build/libs directory.
+
 ## Installation
 
 1. Download the **Essentials Mod (1.18.2)** JAR file [Latest Version Download](https://github.com/frame-dev/EssentialsMod-Mc1.18.2-Forge/releases/latest).
