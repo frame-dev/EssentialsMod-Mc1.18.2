@@ -80,6 +80,11 @@ This command mutes the chat messages of the specified player. *(Only Admins)*
 
 ---
 
+### **```/muteother <PlayerName>```**
+This command mutes the chat messages from the selected player for you. **(Only Admins)**
+
+---
+
 ### **```/gm <gameMode> <optional PlayerName>```**
 This command changes the game mode for the specified player or yourself if no player name is provided. *(Only Admins)*
 

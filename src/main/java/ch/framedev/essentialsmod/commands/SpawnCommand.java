@@ -32,30 +32,51 @@ public class SpawnCommand {
             try {
                 // Attempt to fetch spawn coordinates from the config
                 Config config = new Config();
+
                 if (!config.containsKey("spawn.dimension")) {
-                    player.sendMessage(new TextComponent("The Spawn you set is Invalid. Teleporting to Coordinates in the Overworld!"), Util.NIL_UUID);
-                    int x = config.getConfig().getInt("spawn.x");
-                    int y = config.getConfig().getInt("spawn.y");
-                    int z = config.getConfig().getInt("spawn.z");
-                    player.teleportTo(x, y, z); // Center the player on the block
-                    player.sendMessage(new TextComponent("Teleported to configured spawn point!"), Util.NIL_UUID);
-                    return 1; // Successful teleportation
+                    // No spawn dimension configured, fallback to shared spawn
+                    if (!config.getConfig().containsKey("spawn.x")) {
+                        BlockPos spawnPos = world.getSharedSpawnPos();
+                        BlockPos safeSpawnPos = findSafeSpawn(world, spawnPos);
+
+                        if (safeSpawnPos != null) {
+                            player.teleportTo(safeSpawnPos.getX() + 0.5, safeSpawnPos.getY(), safeSpawnPos.getZ() + 0.5);
+                            player.sendMessage(new TextComponent("Teleported to the world's safe spawn point!"), Util.NIL_UUID);
+                        } else {
+                            player.sendMessage(new TextComponent("Unable to find a safe spawn location.").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                        }
+                    } else {
+                        // Invalid spawn dimension but coordinates exist; fallback to overworld
+                        player.sendMessage(new TextComponent("The Spawn you set is invalid. Teleporting to coordinates in the Overworld!"), Util.NIL_UUID);
+                        int x = config.getConfig().getInt("spawn.x");
+                        int y = config.getConfig().getInt("spawn.y");
+                        int z = config.getConfig().getInt("spawn.z");
+                        player.teleportTo(x + 0.5, y, z + 0.5); // Center the player on the block
+                        player.sendMessage(new TextComponent("Teleported to configured spawn point!"), Util.NIL_UUID);
+                    }
+                    return 1; // Success
                 }
+
+                // Spawn dimension exists, attempt teleport
                 String dimension = config.getString("spawn.dimension");
                 int x = config.getConfig().getInt("spawn.x");
                 int y = config.getConfig().getInt("spawn.y");
                 int z = config.getConfig().getInt("spawn.z");
+
                 ResourceKey<Level> dimensionLevel = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension));
+
                 if (player.getServer() == null) {
                     return 0; // Server not found
                 }
+
                 ServerLevel targetLevel = player.getServer().getLevel(dimensionLevel);
+
                 if (targetLevel != null) {
-                    // Teleport the player to the configured spawn point
-                    player.teleportTo(targetLevel, x, y, z, 0f, 0f); // Center the player on the block
+                    // Valid dimension and coordinates, teleport player
+                    player.teleportTo(targetLevel, x + 0.5, y, z + 0.5, 0f, 0f); // Center the player on the block
                     player.sendMessage(new TextComponent("Teleported to configured spawn point!"), Util.NIL_UUID);
                 } else {
-                    // Fallback to the world's shared spawn point
+                    // Invalid dimension, fallback to shared spawn
                     BlockPos spawnPos = world.getSharedSpawnPos();
                     BlockPos safeSpawnPos = findSafeSpawn(world, spawnPos);
 
@@ -66,6 +87,7 @@ public class SpawnCommand {
                         player.sendMessage(new TextComponent("Unable to find a safe spawn location.").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                     }
                 }
+
                 return 1; // Successful teleportation
             } catch (Exception ex) {
                 // Fallback to the world's shared spawn point
@@ -89,9 +111,7 @@ public class SpawnCommand {
         BlockPos safePos = new BlockPos(pos.getX(), safeY, pos.getZ());
 
         // Ensure there's a solid block below the spawn point and space for the player
-        if (world.getBlockState(safePos.below()).isSolidRender(world, safePos.below()) &&
-                world.getBlockState(safePos).isAir() &&
-                world.getBlockState(safePos.above()).isAir()) {
+        if (world.getBlockState(safePos.below()).isSolidRender(world, safePos.below()) && world.getBlockState(safePos).isAir() && world.getBlockState(safePos.above()).isAir()) {
             return safePos;
         }
 

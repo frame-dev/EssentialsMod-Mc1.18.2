@@ -33,20 +33,20 @@ import java.util.Set;
  * TODO:
  *  - Require Debugging
  */
-public class MuteOtherPlayerCommand implements ICommand{
+public class MuteOtherPlayerCommand implements ICommand {
 
     // Map to store which players have muted others
     public static final Map<String, Set<String>> playerMuteMap = new HashMap<>();
 
     public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("muteother")
-                .requires(source -> source.hasPermission(2)) // Restrict to operators or higher
                 .then(Commands.argument("playerName", StringArgumentType.word())
                         .executes(this::execute));
     }
 
     private int execute(CommandContext<CommandSourceStack> command) {
         if (!(command.getSource().getEntity() instanceof ServerPlayer serverPlayer)) {
+            command.getSource().sendFailure(new TextComponent("Only Players can use this command!").withStyle(ChatFormatting.RED));
             return 0;
         }
 

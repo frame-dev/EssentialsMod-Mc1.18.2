@@ -49,8 +49,10 @@ public class EssentialsMod {
         // Register the processIMC method for mod loading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 
+        // Register Commands
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
 
+        // Register Events
         MinecraftForge.EVENT_BUS.register(new PlayerJoinEvent());
         MinecraftForge.EVENT_BUS.register(new InventorySyncHandler());
         MinecraftForge.EVENT_BUS.register(new BackEventHandler());
@@ -63,24 +65,26 @@ public class EssentialsMod {
         // Set up the path to the custom directory inside the config folder
         Path essentialsConfigDir = FMLPaths.CONFIGDIR.get().resolve("essentials");
 
-// Ensure the directory exists
+        // Ensure the directory exists
         FileUtils.getOrCreateDirectory(essentialsConfigDir, "essentials");
 
-// Define the full path for the essentials-common.toml file
+        // Define the full path for the essentials-common.toml file
         Path configPath = essentialsConfigDir.resolve("essentials-common.toml");
         configFile = new File(essentialsConfigDir.toFile(), "config.yml");
 
-// Register the config with Forge
+        // Register the config with Forge
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, EssentialsConfig.COMMON_CONFIG, "essentials/essentials-common.toml");
 
-
+        // Load Config essentials-common.toml
         EssentialsConfig.loadConfig(EssentialsConfig.COMMON_CONFIG, configPath);
 
+        // Create config.yml and update muted List in MuteCommand
         Config config = new Config();
         if (config.getConfig().getData().containsKey("muted")) {
             MuteCommand.mutedPlayers = new HashSet<>(config.getConfig().getStringList("muted"));
         }
 
+        // Register the Config GUI
         if (FMLEnvironment.dist == Dist.CLIENT) {
             EssentialsConfigScreen.EssentialsModClient.registerConfigGui();
         }
@@ -137,8 +141,6 @@ public class EssentialsMod {
         event.getDispatcher().register(SpawnCommand.register());
         event.getDispatcher().register(SetSpawnCommand.register());
 
-        event.getDispatcher().register(VanishCommand.register());
-
         event.getDispatcher().register(NewGameModeCommand.register());
 
         event.getDispatcher().register(AdminSwordCommand.register());
@@ -161,7 +163,8 @@ public class EssentialsMod {
 
         Set<ICommand> commandSet = new HashSet<>(
                 Set.of(new GodCommand(),
-                        new MuteOtherPlayerCommand())
+                        new MuteOtherPlayerCommand(),
+                        new VanishCommand())
         );
         commandSet.forEach(command -> event.getDispatcher().register(command.register()));
 
@@ -173,6 +176,10 @@ public class EssentialsMod {
                 .executes(context -> DayNightCommand.setNight(context.getSource())));
     }
 
+    /**
+     * This Method returns the Logger instance that will be used to log
+     * @return return the Logger instance
+     */
     public static Logger getLOGGER() {
         return LOGGER;
     }

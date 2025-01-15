@@ -16,19 +16,19 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.HashSet;
 import java.util.Set;
 
-public class VanishCommand {
+public class VanishCommand implements ICommand {
 
     public static final Set<String> vanishList = new HashSet<>(); // Store vanished player names
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("vanish")
                 .requires(source -> source.hasPermission(3)) // Restrict to operators (level 2 or higher)
-                .executes(VanishCommand::execute) // Executes when the command is provided
+                .executes(this::execute) // Executes when the command is provided
                 .then(Commands.literal("v") // Alias for vanish
-                        .executes(VanishCommand::execute));
+                        .executes(this::execute));
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command) {
+    private int execute(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof ServerPlayer player) {
             String playerName = player.getName().getString();
 
