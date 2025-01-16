@@ -54,14 +54,14 @@ public class HealCommand {
                             "You have been healed by",
                             command.getSource().getDisplayName().getString(),
                             "!"
-                    }, new String[]{"§a","§b","§a"});
+                    }, new String[]{"§a", "§b", "§a"});
             targetPlayer.sendMessage(ChatUtils.getPrefix().append(otherTextComponent), Util.NIL_UUID);
 
             // Send feedback to the command source
             TextComponent textComponent = ChatUtils.getTextComponent(new String[]{
                     "Healed",
                     targetPlayer.getGameProfile().getName()
-            }, new String[]{"§a","§b"});
+            }, new String[]{"§a", "§b"});
             command.getSource().sendSuccess(ChatUtils.getPrefix().append(textComponent), true);
 
             return 1; // Indicate success
@@ -74,8 +74,7 @@ public class HealCommand {
 
     private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
-            if (!VanishCommand.vanishList.contains(player.getGameProfile().getName()))
-                builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions
+            builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions
         }
         return builder.buildFuture();
     };

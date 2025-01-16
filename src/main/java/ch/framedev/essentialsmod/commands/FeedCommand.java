@@ -64,8 +64,7 @@ public class FeedCommand {
 
     private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
-            if (!VanishCommand.vanishList.contains(player.getGameProfile().getName()))
-                builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions
+            builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions
         }
         return builder.buildFuture();
     };

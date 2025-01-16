@@ -143,8 +143,6 @@ public class EssentialsMod {
 
         event.getDispatcher().register(NewGameModeCommand.register());
 
-        event.getDispatcher().register(AdminSwordCommand.register());
-
         event.getDispatcher().register(RepairCommand.register());
 
         event.getDispatcher().register(FlyCommand.register());
@@ -164,7 +162,8 @@ public class EssentialsMod {
         Set<ICommand> commandSet = new HashSet<>(
                 Set.of(new GodCommand(),
                         new MuteOtherPlayerCommand(),
-                        new VanishCommand())
+                        new VanishCommand(),
+                        new AdminSwordCommand())
         );
         commandSet.forEach(command -> event.getDispatcher().register(command.register()));
 
