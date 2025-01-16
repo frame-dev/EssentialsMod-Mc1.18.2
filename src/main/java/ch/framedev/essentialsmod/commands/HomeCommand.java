@@ -65,7 +65,10 @@ public class HomeCommand {
         if (location == null) {
             return false; // Home not found
         }
-        player.teleportTo(location.getServerLevel(player), location.getX(), location.getY(), location.getZ(), 0, 0);
+        if (location.getDimension() != null)
+            player.teleportTo(location.getServerLevel(player), location.getX(), location.getY(), location.getZ(), 0, 0);
+        else
+            player.teleportTo(location.getX(), location.getY(), location.getZ());
         return true;
     }
 

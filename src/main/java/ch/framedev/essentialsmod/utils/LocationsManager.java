@@ -108,11 +108,18 @@ public class LocationsManager {
             return null;
 
         Config config = new Config();
-        String dimension = config.getConfig().getString(saveKey + home + ".dimension");
-        int x = config.getConfig().getInt(saveKey + home + ".x");
-        int y = config.getConfig().getInt(saveKey + home + ".y");
-        int z = config.getConfig().getInt(saveKey + home + ".z");
-        return new Location(dimension, x, y, z);
+        if(!config.containsKey(saveKey + home + ".dimension")) {
+            String dimension = config.getConfig().getString(saveKey + home + ".dimension");
+            int x = config.getConfig().getInt(saveKey + home + ".x");
+            int y = config.getConfig().getInt(saveKey + home + ".y");
+            int z = config.getConfig().getInt(saveKey + home + ".z");
+            return new Location(dimension, x, y, z);
+        } else {
+            int x = config.getConfig().getInt(saveKey + home + ".x");
+            int y = config.getConfig().getInt(saveKey + home + ".y");
+            int z = config.getConfig().getInt(saveKey + home + ".z");
+            return new Location(null, x, y,z);
+        }
     }
 
     public static List<String> getWarps() {

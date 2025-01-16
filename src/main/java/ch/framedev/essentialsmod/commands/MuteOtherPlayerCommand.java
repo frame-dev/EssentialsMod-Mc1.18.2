@@ -3,12 +3,13 @@ package ch.framedev.essentialsmod.commands;
 /*
  * ch.framedev.essentialsmod.commands
  * =============================================
- * This File was Created by FrameDev
+ * This File was Created by FrameDev.
  * Please do not change anything without my consent!
  * =============================================
  * This Class was created at 15.01.2025 17:58
  */
 
+import ch.framedev.essentialsmod.EssentialsMod;
 import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -107,6 +108,7 @@ public class MuteOtherPlayerCommand implements ICommand {
             }
 
             // Cancel the default chat event to prevent duplicate messages
+            EssentialsMod.getLOGGER().info("{}: {}", senderName, event.getMessage());
             event.setCanceled(true);
         }
     }

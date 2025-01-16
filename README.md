@@ -163,4 +163,3 @@ The Jar is located in the build/libs directory.
 If you encounter any issues or have suggestions, feel free to contact us or submit an issue on our GitHub repository.
 
 Enjoy the enhanced Minecraft experience with Essentials Mod!
-
