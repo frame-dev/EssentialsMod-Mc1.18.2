@@ -16,34 +16,34 @@ import net.minecraft.world.level.GameType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewGameModeCommand {
+public class NewGameModeCommand implements ICommand {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("gm")
                 .requires(source -> source.hasPermission(3))
                 .then(Commands.argument("mode", StringArgumentType.word())
                         .suggests(GAMEMODE_SUGGESTIONS)
-                        .executes(NewGameModeCommand::executeMode)
+                        .executes(this::executeMode)
                         .then(Commands.argument("target", StringArgumentType.word())
                                 .suggests(PLAYER_SUGGESTION)
-                                .executes(NewGameModeCommand::executeModeForTarget)));
+                                .executes(this::executeModeForTarget)));
     }
 
-    private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
             builder.suggest(player.getGameProfile().getName());
         }
         return builder.buildFuture();
     };
 
-    private static final SuggestionProvider<CommandSourceStack> GAMEMODE_SUGGESTIONS = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> GAMEMODE_SUGGESTIONS = (context, builder) -> {
         builder.suggest("survival").suggest("creative").suggest("adventure").suggest("spectator");
         builder.suggest("s").suggest("c").suggest("a").suggest("sp");
         builder.suggest("0").suggest("1").suggest("2").suggest("3");
         return builder.buildFuture();
     };
 
-    private static int executeMode(CommandContext<CommandSourceStack> context) {
+    private int executeMode(CommandContext<CommandSourceStack> context) {
         String mode = StringArgumentType.getString(context, "mode");
 
         ServerPlayer player;
@@ -66,7 +66,7 @@ public class NewGameModeCommand {
         return 1;
     }
 
-    private static int executeModeForTarget(CommandContext<CommandSourceStack> context) {
+    private int executeModeForTarget(CommandContext<CommandSourceStack> context) {
         String mode = StringArgumentType.getString(context, "mode");
         String targetName = StringArgumentType.getString(context, "target");
 
@@ -89,7 +89,7 @@ public class NewGameModeCommand {
         return 1;
     }
 
-    private static GameType getGameTypeFromString(String mode) {
+    private GameType getGameTypeFromString(String mode) {
         return switch (mode.toLowerCase()) {
             case "s", "0", "survival" -> GameType.SURVIVAL;
             case "c", "1", "creative" -> GameType.CREATIVE;
@@ -99,7 +99,7 @@ public class NewGameModeCommand {
         };
     }
 
-    private static final List<String> gameModeList = new ArrayList<>(
+    private final List<String> gameModeList = new ArrayList<>(
             List.of("s", "0", "survival",
                     "c", "1", "creative",
                     "a", "2", "adventure",

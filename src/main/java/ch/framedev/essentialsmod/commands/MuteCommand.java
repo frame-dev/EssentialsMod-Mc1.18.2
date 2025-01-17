@@ -16,19 +16,19 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MuteCommand {
+public class MuteCommand implements ICommand {
 
     public static Set<String> mutedPlayers = new HashSet<>(); // Store muted player names
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("mute")
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(2)) // Restrict to operators or permission level 2+
                 .then(Commands.argument("playerName", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(MuteCommand::executeWithPlayerName)); // Executes for a specific player
+                        .executes(this::executeWithPlayerName)); // Executes for a specific player
     }
 
-    private static int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
+    private int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
         String playerName = StringArgumentType.getString(command, "playerName");
         CommandSourceStack source = command.getSource();
         ServerPlayer targetPlayer = source.getServer().getPlayerList().getPlayerByName(playerName);
@@ -62,7 +62,7 @@ public class MuteCommand {
         return mutedPlayers.contains(playerName);
     }
 
-    private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
             if (!VanishCommand.vanishList.contains(player.getGameProfile().getName()))
                 builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions

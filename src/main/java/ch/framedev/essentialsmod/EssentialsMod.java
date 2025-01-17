@@ -58,6 +58,7 @@ public class EssentialsMod {
         MinecraftForge.EVENT_BUS.register(new BackEventHandler());
         MinecraftForge.EVENT_BUS.register(new ChatEventHandler());
         MinecraftForge.EVENT_BUS.register(new MuteOtherPlayerCommand.ChatEventHandler());
+        MinecraftForge.EVENT_BUS.register(new BackpackCommand.InventorySyncHandler());
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -141,8 +142,6 @@ public class EssentialsMod {
         event.getDispatcher().register(SpawnCommand.register());
         event.getDispatcher().register(SetSpawnCommand.register());
 
-        event.getDispatcher().register(NewGameModeCommand.register());
-
         event.getDispatcher().register(RepairCommand.register());
 
         event.getDispatcher().register(FlyCommand.register());
@@ -150,8 +149,6 @@ public class EssentialsMod {
         event.getDispatcher().register(HealCommand.register());
         event.getDispatcher().register(FeedCommand.register());
         if (EssentialsConfig.useBack.get()) event.getDispatcher().register(BackCommand.register());
-
-        event.getDispatcher().register(MuteCommand.register());
 
         if (EssentialsConfig.enableWarps.get()) {
             event.getDispatcher().register(WarpCommand.register());
@@ -163,7 +160,10 @@ public class EssentialsMod {
                 Set.of(new GodCommand(),
                         new MuteOtherPlayerCommand(),
                         new VanishCommand(),
-                        new AdminSwordCommand())
+                        new AdminSwordCommand(),
+                        new NewGameModeCommand(),
+                        new MuteCommand(),
+                        new BackpackCommand())
         );
         commandSet.forEach(command -> event.getDispatcher().register(command.register()));
 

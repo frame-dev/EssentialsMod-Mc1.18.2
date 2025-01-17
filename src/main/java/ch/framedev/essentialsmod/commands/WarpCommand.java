@@ -16,6 +16,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -74,9 +75,11 @@ public class WarpCommand {
             player.sendMessage(new TextComponent("Please set this Warp again."), Util.NIL_UUID);
         }
         ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation((String) warpData.get("dimension")));
-        if(player.getServer() == null)
+
+        MinecraftServer server = player.getServer();
+        if(server == null)
             return false; // Server not found
-        ServerLevel targetLevel = player.getServer().getLevel(dimension);
+        ServerLevel targetLevel = server.getLevel(dimension);
         if (targetLevel != null)
             player.teleportTo(targetLevel, (double) x, (double) y, (double) z, 0, 0);
         return true; // Warp successful

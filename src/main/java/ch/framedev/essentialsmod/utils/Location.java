@@ -30,6 +30,13 @@ public class Location {
         this.z = z;
     }
 
+    public Location(int x, int y, int z) {
+        this.dimension = null;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
     public String getDimension() {
         return dimension;
     }
@@ -63,10 +70,12 @@ public class Location {
     }
 
     public ResourceKey<Level> getDimensionResource() {
+        if(dimension == null) return null;
         return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension));
     }
 
     public ServerLevel getServerLevel(ServerPlayer serverPlayer) {
+        if(dimension == null) return null;
         if(serverPlayer.getServer() == null) return null;
         return dimension!= null? serverPlayer.getServer().getLevel(getDimensionResource()) : null;
     }
