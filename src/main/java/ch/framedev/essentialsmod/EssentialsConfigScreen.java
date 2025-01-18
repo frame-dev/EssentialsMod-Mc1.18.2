@@ -2,8 +2,8 @@ package ch.framedev.essentialsmod;
 
 import ch.framedev.essentialsmod.utils.EssentialsConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,65 +24,87 @@ public class EssentialsConfigScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        int buttonWidth = 200;
+        int buttonHeight = 20;
+        int spacing = 30;
+        int startY = this.height / 6;
+        int centerX = this.width / 2 - buttonWidth / 2;
 
-        // Checkbox for enabling warps
-        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 40, 200, 20,
+        // Add buttons
+        int currentY = startY;
+
+        // Enable Warps
+        this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
                 new TextComponent("Enable Warps: " + (EssentialsConfig.enableWarps.get() ? "On" : "Off")),
                 button -> {
                     boolean newValue = !EssentialsConfig.enableWarps.get();
                     EssentialsConfig.enableWarps.set(newValue);
                     button.setMessage(new TextComponent("Enable Warps: " + (newValue ? "On" : "Off")));
                 }));
+        currentY += spacing;
 
-        // Checkbox for enabling the Back command
-        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 70, 200, 20,
+        // Enable Back Command
+        this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
                 new TextComponent("Enable Back Command: " + (EssentialsConfig.useBack.get() ? "On" : "Off")),
                 button -> {
                     boolean newValue = !EssentialsConfig.useBack.get();
                     EssentialsConfig.useBack.set(newValue);
                     button.setMessage(new TextComponent("Enable Back Command: " + (newValue ? "On" : "Off")));
                 }));
+        currentY += spacing;
 
-        // Checkbox for enabling limited homes
-        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 100, 200, 20,
+        // Enable Limited Homes
+        this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
                 new TextComponent("Enable Limited Homes: " + (EssentialsConfig.enableLimitedHomes.get() ? "On" : "Off")),
                 button -> {
                     boolean newValue = !EssentialsConfig.enableLimitedHomes.get();
                     EssentialsConfig.enableLimitedHomes.set(newValue);
                     button.setMessage(new TextComponent("Enable Limited Homes: " + (newValue ? "On" : "Off")));
                 }));
+        currentY += spacing;
 
-        // Slider for limitForHomes
-        this.addRenderableWidget(new AbstractSliderButton(this.width / 2 - 100, this.height / 6 + 130, 200, 20,
+        // Limit for Homes Slider
+        this.addRenderableWidget(new AbstractSliderButton(centerX, currentY, buttonWidth, buttonHeight,
                 new TextComponent("Limit for Homes: " + EssentialsConfig.limitForHomes.get()),
-                EssentialsConfig.limitForHomes.get() / 100.0) { // Normalize to 0.0 - 1.0 range
+                EssentialsConfig.limitForHomes.get() / 100.0) {
+
             @Override
             protected void updateMessage() {
-                int limit = (int) (this.value * 100); // Scale back to 1 - 100 range
+                int limit = (int) (this.value * 100);
                 this.setMessage(new TextComponent("Limit for Homes: " + limit));
             }
 
             @Override
             protected void applyValue() {
-                int limit = (int) (this.value * 100); // Scale back to 1-100 range
+                int limit = (int) (this.value * 100);
                 EssentialsConfig.limitForHomes.set(limit);
             }
         });
+        currentY += spacing;
 
-        // Checkbox for enabling Mute Player for themselves.
-        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 130, 200, 20,
-                new TextComponent("Enable Mute Other Player for themselves: " + (EssentialsConfig.muteOtherPlayeForSelf.get() ? "On" : "Off")),
+        // Enable Mute Other Player for Themselves
+        this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
+                new TextComponent("Enable Mute Other Player for Themselves: " + (EssentialsConfig.muteOtherPlayerForSelf.get() ? "On" : "Off")),
                 button -> {
-                    boolean newValue = !EssentialsConfig.muteOtherPlayeForSelf.get();
-                    EssentialsConfig.muteOtherPlayeForSelf.set(newValue);
-                    button.setMessage(new TextComponent("Enable Mute Other Player for themselves: " + (newValue ? "On" : "Off")));
+                    boolean newValue = !EssentialsConfig.muteOtherPlayerForSelf.get();
+                    EssentialsConfig.muteOtherPlayerForSelf.set(newValue);
+                    button.setMessage(new TextComponent("Enable Mute Other Player for Themselves: " + (newValue ? "On" : "Off")));
                 }));
+        currentY += spacing;
 
+        // Enable Backpack
+        this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
+                new TextComponent("Enable Backpack: " + (EssentialsConfig.enableBackPack.get() ? "On" : "Off")),
+                button -> {
+                    boolean newValue = !EssentialsConfig.enableBackPack.get();
+                    EssentialsConfig.enableBackPack.set(newValue);
+                    button.setMessage(new TextComponent("Enable Backpack: " + (newValue ? "On" : "Off")));
+                }));
+        currentY += spacing;
 
-        // "Done" button to return to the parent screen
-        this.addRenderableWidget(new Button(this.width / 2 - 100, this.height / 6 + 160, 200, 20,
+        // Done Button
+        this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
                 new TextComponent("Done"), button -> {
-            // Save the configuration when done
             EssentialsConfig.COMMON_CONFIG.save();
             if (this.minecraft != null) {
                 this.minecraft.setScreen(this.parent);

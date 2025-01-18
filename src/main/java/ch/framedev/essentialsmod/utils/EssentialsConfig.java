@@ -15,7 +15,8 @@ public class EssentialsConfig {
     public static final ForgeConfigSpec.BooleanValue useBack;
     public static final ForgeConfigSpec.BooleanValue enableLimitedHomes;
     public static final ForgeConfigSpec.IntValue limitForHomes;
-    public static final ForgeConfigSpec.BooleanValue muteOtherPlayeForSelf;
+    public static final ForgeConfigSpec.BooleanValue muteOtherPlayerForSelf;
+    public static final ForgeConfigSpec.BooleanValue enableBackPack;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -38,9 +39,15 @@ public class EssentialsConfig {
                 .comment("Limit the number of homes per player. Default Home will be ignored.")
                .defineInRange("limitForHomes", 5, 1, Integer.MAX_VALUE);
 
-        muteOtherPlayeForSelf = builder
+        muteOtherPlayerForSelf = builder
                 .comment("Enable or disable the feature that allows players to mute other players for themselves.")
                         .define("muteOtherPlayerForSelf", true);
+
+        enableBackPack = builder
+                .comment("Enable or disable the Backpack Command")
+                        .define("enableBackPack", false);
+
+        builder.comment("Essentials Mod Configuration").push("warps");
 
         builder.pop();
 

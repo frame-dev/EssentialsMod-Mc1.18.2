@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.utils;
 
+import ch.framedev.essentialsmod.EssentialsMod;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.InputStreamReader;
@@ -26,7 +27,7 @@ public class OfflinePlayerUUID {
                 System.err.println("Player not found or API request failed: " + connection.getResponseCode());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            EssentialsMod.getLOGGER().error("Exception while getting UUID from Mojang API", e);
         }
         return null; // Return null if the UUID couldn't be retrieved
     }

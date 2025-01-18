@@ -128,3 +128,9 @@ This command teleports you to a predefined warp location.
 This command makes you invulnerable or a specific Player
 
 ---
+
+### **```/backpack```**
+This command allows you to use the /backpack command
+This Command is by default disabled in the Config
+
+---

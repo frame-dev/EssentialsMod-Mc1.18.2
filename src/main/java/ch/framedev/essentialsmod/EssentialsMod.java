@@ -29,12 +29,14 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
 
-@SuppressWarnings("InstantiationOfUtilityClass")
+@SuppressWarnings({"InstantiationOfUtilityClass", "unchecked"})
 @Mod("essentials")
 public class EssentialsMod {
     // Directly reference a slf4j logger
@@ -58,7 +60,8 @@ public class EssentialsMod {
         MinecraftForge.EVENT_BUS.register(new BackEventHandler());
         MinecraftForge.EVENT_BUS.register(new ChatEventHandler());
         MinecraftForge.EVENT_BUS.register(new MuteOtherPlayerCommand.ChatEventHandler());
-        MinecraftForge.EVENT_BUS.register(new BackpackCommand.InventorySyncHandler());
+        MinecraftForge.EVENT_BUS.register(new BackpackCommand.BackpackEventHandler());
+        MinecraftForge.EVENT_BUS.register(new TempBanCommand.PlayerBanListener());
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -83,6 +86,14 @@ public class EssentialsMod {
         Config config = new Config();
         if (config.getConfig().getData().containsKey("muted")) {
             MuteCommand.mutedPlayers = new HashSet<>(config.getConfig().getStringList("muted"));
+        }
+        if(config.getConfig().getData().containsKey("tempBan")) {
+            Map<String, Object> defaultConfiguration = (Map<String, Object>) config.getConfig().getData().get("tempBan");
+            for (String playerName : defaultConfiguration.keySet()) {
+                Map<String,Object> data = (Map<String,Object>) defaultConfiguration.get(playerName);
+                TempBanCommand.BanDetails banDetails = TempBanCommand.BanDetails.fromMap(data);
+                TempBanCommand.tempBanList.put(UUID.fromString(playerName), banDetails);
+            }
         }
 
         // Register the Config GUI
@@ -163,8 +174,11 @@ public class EssentialsMod {
                         new AdminSwordCommand(),
                         new NewGameModeCommand(),
                         new MuteCommand(),
-                        new BackpackCommand())
-        );
+                        new TempBanCommand()
+        ));
+
+        if (EssentialsConfig.enableBackPack.get()) commandSet.add(new BackpackCommand());
+
         commandSet.forEach(command -> event.getDispatcher().register(command.register()));
 
 
