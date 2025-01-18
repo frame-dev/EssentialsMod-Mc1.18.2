@@ -142,6 +142,10 @@ repositories {
         url = uri("https://repository.framedev.ch:444/releases")
     }
 
+    maven {
+        url 'https://repo.spongepowered.org/maven'
+    }
+
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
@@ -158,6 +162,7 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.2.21'
 
 
+
     implementation fg.deobf("ch.framedev:JavaYamlUtils:1.2.0-RELEASE")
 //    shaded ("ch.framedev:JavaYamlUtils:1.2.0-RELEASE")
 
@@ -172,6 +177,19 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+}
+
+configurations.all {
+    resolutionStrategy {
+        // Force Gson version to avoid conflicts
+        force 'com.google.code.gson:gson:2.8.9'
+    }
+
+    // Debug dependency tree
+    incoming.beforeResolve {
+        println("Resolving configuration: $name")
+        dependencies.each { println(" - ${it.group}:${it.name}:${it.version}") }
+    }
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
@@ -195,6 +213,8 @@ jar {
             it.isDirectory() ? it : zipTree(it)
         }
     }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 // Example configuration to allow publishing using the maven-publish plugin

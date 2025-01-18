@@ -6,8 +6,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -76,8 +78,20 @@ public class TempBanCommand implements ICommand {
         if (Instant.now().isAfter(banDetails.unbanTime)) {
             // Remove expired ban
             tempBanList.remove(playerId);
-            Config config = new Config();
-            config.getConfig().set("tempBan." + playerId, null);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isPlayerBanned(UUID player) {
+        if (!tempBanList.containsKey(player)) {
+            return false;
+        }
+
+        BanDetails banDetails = tempBanList.get(player);
+        if (Instant.now().isAfter(banDetails.unbanTime)) {
+            // Remove expired ban
+            tempBanList.remove(player);
             return false;
         }
         return true;
@@ -85,6 +99,10 @@ public class TempBanCommand implements ICommand {
 
     public static BanDetails getBanDetails(ServerPlayer player) {
         return tempBanList.get(player.getUUID());
+    }
+
+    public static BanDetails getBanDetails(UUID uuid) {
+        return tempBanList.get(uuid);
     }
 
     private static long parseDuration(String duration) {
@@ -131,30 +149,8 @@ public class TempBanCommand implements ICommand {
             String reason = (String) map.get("reason");
             return new BanDetails(unbanTime, reason);
         }
-    }
 
-    @Mod.EventBusSubscriber(modid = "essentials")
-    public static class PlayerBanListener {
-
-        @SubscribeEvent
-        public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
-            if (event.getPlayer() instanceof ServerPlayer player) {
-                if (TempBanCommand.isPlayerBanned(player)) {
-                    TempBanCommand.BanDetails banDetails = TempBanCommand.getBanDetails(player);
-                    if (banDetails != null) {
-                        Instant now = Instant.now();
-                        Duration remaining = Duration.between(now, banDetails.unbanTime);
-
-                        String banMessage = "You are temporarily banned.\n" +
-                                "Reason: " + banDetails.reason + "\n" +
-                                "Remaining Time: " + formatDuration(remaining.toMillis());
-                        player.connection.disconnect(new TextComponent(banMessage));
-                    }
-                }
-            }
-        }
-
-        private static String formatDuration(long millis) {
+        public static String formatDuration(long millis) {
             long seconds = millis / 1000;
             long minutes = seconds / 60;
             long hours = minutes / 60;
@@ -164,6 +160,59 @@ public class TempBanCommand implements ICommand {
             if (hours > 0) return hours + "h " + (minutes % 60) + "m";
             if (minutes > 0) return minutes + "m " + (seconds % 60) + "s";
             return seconds + "s";
+        }
+    }
+
+    public static void checkBanDuringLogin(ServerLoginPacketListenerImpl loginListener, Connection connection) {
+        UUID playerUUID = loginListener.gameProfile.getId();
+
+        TempBanCommand.BanDetails banDetails = TempBanCommand.getBanDetails(playerUUID);
+        if (banDetails != null && isPlayerBanned(loginListener.gameProfile.getId())) {
+            Instant now = Instant.now();
+            Duration remaining = Duration.between(now, banDetails.unbanTime);
+
+            if (remaining.isNegative() || remaining.isZero()) {
+                // Unban expired players
+                tempBanList.remove(playerUUID);
+                Config config = new Config();
+                config.getConfig().set("tempBan." + playerUUID, null);
+                config.getConfig().save();
+                return;
+            }
+
+            // Construct the ban message
+            String banMessage = "You are temporarily banned.\n" +
+                    "Reason: " + banDetails.reason + "\n" +
+                    "Remaining Time: " + formatDuration(remaining.toMillis());
+
+            // Disconnect the player with the custom ban message
+            connection.disconnect(new TextComponent(banMessage));
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = "essentials") // Replace with your mod's ID
+    public static class BanListener {
+        @SubscribeEvent
+        public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+            if (event.getPlayer() instanceof ServerPlayer player) {
+                BanDetails banDetails = getBanDetails(player);
+                if (isPlayerBanned(player)) {
+                    if (banDetails != null) {
+                        // Schedule the disconnection on the server thread
+                        player.server.execute(() -> {
+                            Instant now = Instant.now();
+                            Duration remaining = Duration.between(now, banDetails.unbanTime);
+
+                            String banMessage = "You are temporarily banned.\n" +
+                                    "Reason: " + banDetails.reason + "\n" +
+                                    "Remaining Time: " + formatDuration(remaining.toMillis());
+
+                            // Disconnect the banned player
+                            player.connection.disconnect(new TextComponent(banMessage));
+                        });
+                    }
+                }
+            }
         }
     }
 }

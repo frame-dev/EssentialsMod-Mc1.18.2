@@ -34,6 +34,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static ch.framedev.essentialsmod.commands.TempBanCommand.tempBanList;
+
 // The value here should match an entry in the META-INF/mods.toml file
 
 @SuppressWarnings({"InstantiationOfUtilityClass", "unchecked"})
@@ -61,7 +63,7 @@ public class EssentialsMod {
         MinecraftForge.EVENT_BUS.register(new ChatEventHandler());
         MinecraftForge.EVENT_BUS.register(new MuteOtherPlayerCommand.ChatEventHandler());
         MinecraftForge.EVENT_BUS.register(new BackpackCommand.BackpackEventHandler());
-        MinecraftForge.EVENT_BUS.register(new TempBanCommand.PlayerBanListener());
+        MinecraftForge.EVENT_BUS.register(new TempBanCommand.BanListener());
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -87,12 +89,12 @@ public class EssentialsMod {
         if (config.getConfig().getData().containsKey("muted")) {
             MuteCommand.mutedPlayers = new HashSet<>(config.getConfig().getStringList("muted"));
         }
-        if(config.getConfig().getData().containsKey("tempBan")) {
+        if (config.getConfig().getData().containsKey("tempBan")) {
             Map<String, Object> defaultConfiguration = (Map<String, Object>) config.getConfig().getData().get("tempBan");
             for (String playerName : defaultConfiguration.keySet()) {
-                Map<String,Object> data = (Map<String,Object>) defaultConfiguration.get(playerName);
+                Map<String, Object> data = (Map<String, Object>) defaultConfiguration.get(playerName);
                 TempBanCommand.BanDetails banDetails = TempBanCommand.BanDetails.fromMap(data);
-                TempBanCommand.tempBanList.put(UUID.fromString(playerName), banDetails);
+                tempBanList.put(UUID.fromString(playerName), banDetails);
             }
         }
 
@@ -124,8 +126,7 @@ public class EssentialsMod {
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
+        EssentialsMod.getLOGGER().info("onServerStarting");
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
@@ -175,7 +176,7 @@ public class EssentialsMod {
                         new NewGameModeCommand(),
                         new MuteCommand(),
                         new TempBanCommand()
-        ));
+                ));
 
         if (EssentialsConfig.enableBackPack.get()) commandSet.add(new BackpackCommand());
 
@@ -191,9 +192,11 @@ public class EssentialsMod {
 
     /**
      * This Method returns the Logger instance that will be used to log
+     *
      * @return return the Logger instance
      */
     public static Logger getLOGGER() {
         return LOGGER;
     }
+
 }
