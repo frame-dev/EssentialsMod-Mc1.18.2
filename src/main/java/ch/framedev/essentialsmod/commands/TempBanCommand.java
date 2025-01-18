@@ -1,6 +1,7 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.utils.OfflinePlayerUUID;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -47,19 +48,20 @@ public class TempBanCommand implements ICommand {
             return 0;
         }
 
+        UUID playerId;
+
         ServerPlayer targetPlayer = command.getSource().getServer().getPlayerList().getPlayerByName(playerName);
         if (targetPlayer == null) {
-            command.getSource().sendFailure(new TextComponent("Player not found!"));
-            return 0;
-        }
-
-        UUID playerId = targetPlayer.getUUID();
+            playerId = OfflinePlayerUUID.getUUIDFromMojang(playerName);
+        } else
+            playerId = targetPlayer.getUUID();
         Instant unbanTime = Instant.now().plusMillis(durationInMillis);
 
         tempBanList.put(playerId, new BanDetails(unbanTime, reason));
 
         // Notify the player and command executor
-        targetPlayer.connection.disconnect(new TextComponent("You are banned for: " + reason + ". Remaining time: " + formatDuration(durationInMillis)));
+        if (targetPlayer != null)
+            targetPlayer.connection.disconnect(new TextComponent("You are banned for: " + reason + ". Remaining time: " + formatDuration(durationInMillis)));
         command.getSource().sendSuccess(new TextComponent(playerName + " has been banned for " + formatDuration(durationInMillis) + ". Reason: " + reason), false);
 
         Config config = new Config();
