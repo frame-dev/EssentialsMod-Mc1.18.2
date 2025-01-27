@@ -62,7 +62,7 @@ public class EssentialsMod {
         MinecraftForge.EVENT_BUS.register(new BackEventHandler());
         MinecraftForge.EVENT_BUS.register(new ChatEventHandler());
         MinecraftForge.EVENT_BUS.register(new MuteOtherPlayerCommand.ChatEventHandler());
-        MinecraftForge.EVENT_BUS.register(new BackpackCommand.BackpackEventHandler());
+        if (EssentialsConfig.enableBackPack.get()) MinecraftForge.EVENT_BUS.register(new BackpackCommand.BackpackEventHandler());
         MinecraftForge.EVENT_BUS.register(new TempBanCommand.BanListener());
 
         // Register ourselves for server and other game events we are interested in
