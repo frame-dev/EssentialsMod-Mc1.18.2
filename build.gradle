@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 
 
-version = '1.0.6'
+version = '1.0.7'
 group = 'ch.framedev.essentials' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'essentials-Mc1.18.2-v'
 

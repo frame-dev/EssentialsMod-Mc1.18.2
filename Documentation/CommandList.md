@@ -134,3 +134,16 @@ This command allows you to use the /backpack command
 This Command is by default disabled in the Config
 
 ---
+
+### **```/maintenance```**
+This command enables the maintenance mode for the server
+Only players who have been added to the List with the command /maintenance <PlayerName>
+*(Only Admins)*
+
+---
+
+### **```/maintenance <PlayerName>```**
+This command adds the player to the allowed List to join the server in maintenance mode.
+*(Only Admins)*
+
+---

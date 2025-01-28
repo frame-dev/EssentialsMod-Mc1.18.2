@@ -6,6 +6,7 @@ import ch.framedev.essentialsmod.utils.Config;
 import ch.framedev.essentialsmod.utils.EssentialsConfig;
 import com.mojang.logging.LogUtils;
 import net.minecraft.commands.Commands;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -62,7 +63,8 @@ public class EssentialsMod {
         MinecraftForge.EVENT_BUS.register(new BackEventHandler());
         MinecraftForge.EVENT_BUS.register(new ChatEventHandler());
         MinecraftForge.EVENT_BUS.register(new MuteOtherPlayerCommand.ChatEventHandler());
-        if (EssentialsConfig.enableBackPack.get()) MinecraftForge.EVENT_BUS.register(new BackpackCommand.BackpackEventHandler());
+        if (EssentialsConfig.enableBackPack.get())
+            MinecraftForge.EVENT_BUS.register(new BackpackCommand.BackpackEventHandler());
         MinecraftForge.EVENT_BUS.register(new TempBanCommand.BanListener());
 
         // Register ourselves for server and other game events we are interested in
@@ -97,6 +99,10 @@ public class EssentialsMod {
                 tempBanList.put(UUID.fromString(playerName), banDetails);
             }
         }
+        if(!config.getConfig().getData().containsKey("maintenance") || !((Map<String,Object>) config.getConfig().getData().get("maintenance")).containsKey("tabHeader")) {
+            config.getConfig().set("maintenance.tabHeader", "This server is in maintenance mode!");
+            config.getConfig().save();
+        }
 
         // Register the Config GUI
         if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -127,6 +133,13 @@ public class EssentialsMod {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         EssentialsMod.getLOGGER().info("onServerStarting");
+        if(!(event.getServer() instanceof DedicatedServer server))
+            return;
+        Config config = new Config();
+        if (!config.containsKey("defaultMotd")) {
+            config.getConfig().set("defaultMotd", server.getMotd());
+            config.getConfig().save();
+        }
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
@@ -175,7 +188,8 @@ public class EssentialsMod {
                         new AdminSwordCommand(),
                         new NewGameModeCommand(),
                         new MuteCommand(),
-                        new TempBanCommand()
+                        new TempBanCommand(),
+                        new MaintenanceCommand()
                 ));
 
         if (EssentialsConfig.enableBackPack.get()) commandSet.add(new BackpackCommand());

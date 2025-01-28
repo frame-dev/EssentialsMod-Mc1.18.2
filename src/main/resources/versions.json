@@ -1,9 +1,10 @@
 {
-  "latest": "1.0.6",
+  "latest": "1.0.7",
   "download-file": "essentials-Mc1.18.2-v",
   "versions": [
     "1.0.4",
     "1.0.5",
-    "1.0.6"
+    "1.0.6",
+    "1.0.7"
   ]
 }
