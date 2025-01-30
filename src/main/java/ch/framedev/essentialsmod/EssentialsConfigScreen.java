@@ -102,6 +102,26 @@ public class EssentialsConfigScreen extends Screen {
                 }));
         currentY += spacing;
 
+        // Enable BackpackConfigSave
+        this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
+                new TextComponent("Enable Backpack Config Save: " + (EssentialsConfig.enableBackPackSaveInConfig.get() ? "On" : "Off")),
+                button -> {
+                    boolean newValue = !EssentialsConfig.enableBackPackSaveInConfig.get();
+                    EssentialsConfig.enableBackPackSaveInConfig.set(newValue);
+                    button.setMessage(new TextComponent("Enable Backpack Config Save: " + (newValue ? "On" : "Off")));
+                }));
+        currentY += spacing;
+
+        // Enable Signs Events
+        this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
+                new TextComponent("Enable Signs events as example [FREE]: " + (EssentialsConfig.enableSigns.get() ? "On" : "Off")),
+                button -> {
+                    boolean newValue = !EssentialsConfig.enableSigns.get();
+                    EssentialsConfig.enableSigns.set(newValue);
+                    button.setMessage(new TextComponent("Enable Signs events as example [FREE]: " + (newValue ? "On" : "Off")));
+                }));
+        currentY += spacing;
+
         // Done Button
         this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
                 new TextComponent("Done"), button -> {

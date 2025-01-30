@@ -17,6 +17,8 @@ public class EssentialsConfig {
     public static final ForgeConfigSpec.IntValue limitForHomes;
     public static final ForgeConfigSpec.BooleanValue muteOtherPlayerForSelf;
     public static final ForgeConfigSpec.BooleanValue enableBackPack;
+    public static final ForgeConfigSpec.BooleanValue enableBackPackSaveInConfig;
+    public static final ForgeConfigSpec.BooleanValue enableSigns;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -46,6 +48,16 @@ public class EssentialsConfig {
         enableBackPack = builder
                 .comment("Enable or disable the Backpack Command")
                         .define("enableBackPack", false);
+
+        enableBackPackSaveInConfig = builder
+                .comment("Save Backpack settings in the config instead of a Map.")
+                        .define("enableBackPackSaveInConfig", false);
+
+        enableSigns = builder
+                .comment("Enable Signs events as example [FREE]")
+                        .define("enableSigns", false);
+
+        builder.pop();
 
         builder.comment("Essentials Mod Configuration").push("warps");
 

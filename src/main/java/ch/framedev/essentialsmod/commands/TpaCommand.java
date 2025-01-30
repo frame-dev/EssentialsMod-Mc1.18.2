@@ -21,13 +21,9 @@ public class TpaCommand {
 
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("tpa") // Base command
-                .then(Commands.argument("playerName", StringArgumentType.word())
-                        .suggests(PLAYER_SUGGESTION)
-                        .executes(TpaCommand::sendTpaRequest)) // Handles sending requests
-                .then(Commands.literal("accept")
-                        .executes(TpaCommand::acceptTpaRequest)) // Handles accepting requests
-                .then(Commands.literal("deny")
-                        .executes(TpaCommand::denyTpaRequest)); // Handles denying requests
+                .then(Commands.argument("playerName", StringArgumentType.word()).suggests(PLAYER_SUGGESTION).executes(TpaCommand::sendTpaRequest)) // Handles sending requests
+                .then(Commands.literal("accept").executes(TpaCommand::acceptTpaRequest)) // Handles accepting requests
+                .then(Commands.literal("deny").executes(TpaCommand::denyTpaRequest));
     }
 
     private static int sendTpaRequest(CommandContext<CommandSourceStack> context) {

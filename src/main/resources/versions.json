@@ -6,5 +6,29 @@
     "1.0.5",
     "1.0.6",
     "1.0.7"
+  ],
+  "versionDescriptions": [
+    {
+      "version": "1.0.4",
+      "description": [
+        "Initial version, featuring basic features."
+      ]
+    },
+    {
+      "version": "1.0.5",
+      "description": []
+    },
+    {
+      "version": "1.0.6",
+      "description": [
+        "Added more features and bug fixes."
+      ]
+    },
+    {
+      "version": "1.0.7",
+      "description": [
+        "Fixed a bug related to the new feature."
+      ]
+    }
   ]
 }

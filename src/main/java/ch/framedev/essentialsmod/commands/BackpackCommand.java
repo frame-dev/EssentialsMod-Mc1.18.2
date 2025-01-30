@@ -2,6 +2,7 @@ package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.EssentialsMod;
 import ch.framedev.essentialsmod.utils.Config;
+import ch.framedev.essentialsmod.utils.EssentialsConfig;
 import ch.framedev.yamlutils.FileConfiguration;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -42,7 +43,8 @@ public class BackpackCommand implements ICommand {
 
             // Load backpack if not already loaded
             if (!backpacks.containsKey(uuid)) {
-                loadBackpack(uuid);
+                if (EssentialsConfig.enableBackPackSaveInConfig.get())
+                    loadBackpack(uuid);
             }
 
             // Create a new inventory for the player
@@ -96,8 +98,9 @@ public class BackpackCommand implements ICommand {
         public static void onContainerClose(PlayerContainerEvent.Close event) {
             if (event.getPlayer() instanceof ServerPlayer player) {
                 String uuid = player.getStringUUID();
-                if (backpacks.containsKey(uuid)) {
-                    saveBackpack(uuid);
+                if (!backpacks.isEmpty() && backpacks.containsKey(uuid)) {
+                    if (EssentialsConfig.enableBackPackSaveInConfig.get())
+                        saveBackpack(uuid);
                 }
             }
         }
