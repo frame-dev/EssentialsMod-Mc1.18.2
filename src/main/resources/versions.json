@@ -27,7 +27,11 @@
     {
       "version": "1.0.7",
       "description": [
-        "Fixed a bug related to the new feature."
+        "Fixed a bug related to the new feature.",
+        "Maintenance command added",
+        "Backpack bug fix added",
+        "Backpack configuration to save only as Map added",
+        "Fly speed added"
       ]
     }
   ]
