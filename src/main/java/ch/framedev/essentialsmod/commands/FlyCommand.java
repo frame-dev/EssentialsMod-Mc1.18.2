@@ -1,6 +1,7 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.utils.ChatUtils;
+import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -8,6 +9,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -18,9 +20,28 @@ public class FlyCommand {
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(2)) // Restrict command to operators or permission level 2+
                 .then(Commands.argument("playerName", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(FlyCommand::executeWithPlayerName)) // Executes for a specific player
+                        .executes(FlyCommand::executeWithPlayerName) // Executes for a specific player
+                        .then(Commands.argument("speed", FloatArgumentType.floatArg(0.1f, 10f))
+                                .executes(FlyCommand::executeWithPlayerNameSpeed)))
                 .executes(FlyCommand::executeDefault); // Executes for the command executor
     }
+
+    private static int executeWithPlayerNameSpeed(CommandContext<CommandSourceStack> command) {
+        String playerName = StringArgumentType.getString(command, "playerName");
+        float speed = FloatArgumentType.getFloat(command, "speed");
+        ServerPlayer player = command.getSource().getServer().getPlayerList().getPlayerByName(playerName);
+
+        if (player == null) {
+            command.getSource().sendFailure(ChatUtils.getPrefix().append(Component.nullToEmpty("Player not found!")));
+            return 0;
+        }
+
+        setFlySpeed(player, speed);
+        command.getSource().sendSuccess(ChatUtils.getPrefix().append(Component.nullToEmpty(
+                "Set flight speed for " + player.getGameProfile().getName() + " to " + speed)), true);
+        return 1;
+    }
+
 
     private static int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
         String playerName = StringArgumentType.getString(command, "playerName");
@@ -68,6 +89,12 @@ public class FlyCommand {
         return 1; // Indicate success
     }
 
+    private static void setFlySpeed(ServerPlayer player, float speed) {
+        player.getAbilities().setFlyingSpeed(speed / 10.0f); // Divide by 10 to match Minecraft's flight speed scale
+        player.onUpdateAbilities();
+        player.sendMessage(new TextComponent("Fly Speed set to " + player.getAbilities().getFlyingSpeed()), player.getUUID());
+    }
+
     private static TextComponent getTextByStatus(boolean active) {
         if (active) {
             return ChatUtils.getTextComponent(new String[]{"Flying", "enabled!"}, new String[]{"§a", "§6"});
@@ -83,7 +110,6 @@ public class FlyCommand {
             return ChatUtils.getTextComponent(new String[]{"Flying for", playerName, "is", "disabled!"}, new String[]{"§a", "§6", "§a", "§6"});
         }
     }
-
 
     private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {

@@ -60,6 +60,11 @@ This command toggles the ability to fly for the specified player or yourself if 
 
 ---
 
+### **```/fly <PlayerName> <Speed>```**
+This command sets the fly speed for the specified player *(Only Admins)*
+
+---
+
 ### **```/heal <optional PlayerName>```**
 This command restores health for the specified player or yourself if no player name is provided. *(Only Admins)*
 
