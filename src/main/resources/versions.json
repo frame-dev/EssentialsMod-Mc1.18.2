@@ -31,7 +31,8 @@
         "Maintenance command added",
         "Backpack bug fix added",
         "Backpack configuration to save only as Map added",
-        "Fly speed added"
+        "Fly speed added",
+        "Vanish silent join and leave added"
       ]
     }
   ]
