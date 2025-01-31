@@ -31,6 +31,14 @@ import java.util.regex.Pattern;
 public class PlayerJoinEvent {
 
     @SubscribeEvent
+    public static void onPlayerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (player.getServer() == null) return;
+        if(VanishCommand.vanishList.contains(player.getName().getString()))
+            player.getServer().getPlayerList().remove(player);
+    }
+
+    @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             if (player.getServer() == null) return;
