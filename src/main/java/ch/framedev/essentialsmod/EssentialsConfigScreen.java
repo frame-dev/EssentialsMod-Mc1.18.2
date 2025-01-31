@@ -122,6 +122,16 @@ public class EssentialsConfigScreen extends Screen {
                 }));
         currentY += spacing;
 
+        // Enable Signs Events
+        this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
+                new TextComponent("Enable silent join and leave messages: " + (EssentialsConfig.silentJoinLeave.get() ? "On" : "Off")),
+                button -> {
+                    boolean newValue = !EssentialsConfig.silentJoinLeave.get();
+                    EssentialsConfig.silentJoinLeave.set(newValue);
+                    button.setMessage(new TextComponent("Enable silent join and leave messages: " + (newValue ? "On" : "Off")));
+                }));
+        currentY += spacing;
+
         // Done Button
         this.addRenderableWidget(new Button(centerX, currentY, buttonWidth, buttonHeight,
                 new TextComponent("Done"), button -> {

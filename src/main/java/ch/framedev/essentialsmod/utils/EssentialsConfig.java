@@ -19,6 +19,7 @@ public class EssentialsConfig {
     public static final ForgeConfigSpec.BooleanValue enableBackPack;
     public static final ForgeConfigSpec.BooleanValue enableBackPackSaveInConfig;
     public static final ForgeConfigSpec.BooleanValue enableSigns;
+    public static final ForgeConfigSpec.BooleanValue silentJoinLeave;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -56,6 +57,10 @@ public class EssentialsConfig {
         enableSigns = builder
                 .comment("Enable Signs events as example [FREE]")
                         .define("enableSigns", false);
+
+        silentJoinLeave = builder
+                .comment("Enable or disable the silent join and leave messages.")
+                        .define("silentJoinLeave", true);
 
         builder.pop();
 
