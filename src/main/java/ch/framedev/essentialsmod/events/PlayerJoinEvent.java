@@ -11,6 +11,7 @@ import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -31,17 +32,24 @@ public class PlayerJoinEvent {
 
     @SubscribeEvent
     public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player) {
+        if (event.getEntity() instanceof ServerPlayer player) {
             if (player.getServer() == null) return;
-            if (VanishCommand.vanishList.contains(player.getName().getString()))
-                for (ServerPlayer otherPlayer : player.getServer().getPlayerList().getPlayers()) {
+            PlayerList playerList = player.getServer().getPlayerList();
+
+            // Check if player is vanished
+            if (VanishCommand.vanishList.contains(player.getName().getString())) {
+                for (ServerPlayer otherPlayer : playerList.getPlayers()) {
                     if (otherPlayer != player && !VanishCommand.vanishList.contains(otherPlayer.getName().getString()) && !otherPlayer.hasPermissions(2)) {
+                        // Hide vanished player from others
                         otherPlayer.connection.send(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, player));
                         otherPlayer.connection.send(new ClientboundRemoveEntitiesPacket(player.getId()));
                     }
                 }
-            else {
-                for (ServerPlayer otherPlayer : player.getServer().getPlayerList().getPlayers()) {
+                // Hide default join message by removing the player temporarily
+                playerList.getPlayers().remove(player);
+            } else {
+                // Hide vanished players from the joining player
+                for (ServerPlayer otherPlayer : playerList.getPlayers()) {
                     if (otherPlayer != player && VanishCommand.vanishList.contains(otherPlayer.getName().getString()) && !player.hasPermissions(2)) {
                         player.connection.send(new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, otherPlayer));
                         player.connection.send(new ClientboundRemoveEntitiesPacket(otherPlayer.getId()));
