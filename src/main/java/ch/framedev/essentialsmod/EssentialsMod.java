@@ -101,7 +101,7 @@ public class EssentialsMod {
                 tempBanList.put(UUID.fromString(playerName), banDetails);
             }
         }
-        if(!config.getConfig().getData().containsKey("maintenance") || !((Map<String,Object>) config.getConfig().getData().get("maintenance")).containsKey("tabHeader")) {
+        if (!config.getConfig().getData().containsKey("maintenance") || !((Map<String, Object>) config.getConfig().getData().get("maintenance")).containsKey("tabHeader")) {
             config.getConfig().set("maintenance.tabHeader", "This server is in maintenance mode!");
             config.getConfig().save();
         }
@@ -135,7 +135,7 @@ public class EssentialsMod {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         EssentialsMod.getLOGGER().info("onServerStarting");
-        if(!(event.getServer() instanceof DedicatedServer server))
+        if (!(event.getServer() instanceof DedicatedServer server))
             return;
         Config config = new Config();
         if (!config.containsKey("defaultMotd")) {
@@ -173,10 +173,6 @@ public class EssentialsMod {
 
         event.getDispatcher().register(FlyCommand.register());
 
-        event.getDispatcher().register(HealCommand.register());
-        event.getDispatcher().register(FeedCommand.register());
-        if (EssentialsConfig.useBack.get()) event.getDispatcher().register(BackCommand.register());
-
         if (EssentialsConfig.enableWarps.get()) {
             event.getDispatcher().register(WarpCommand.register());
             event.getDispatcher().register(DeleteWarpCommand.register());
@@ -184,17 +180,21 @@ public class EssentialsMod {
         }
 
         Set<ICommand> commandSet = new HashSet<>(
-                Set.of(new GodCommand(),
+                Set.of(
+                        new GodCommand(),
                         new MuteOtherPlayerCommand(),
                         new VanishCommand(),
                         new AdminSwordCommand(),
                         new NewGameModeCommand(),
                         new MuteCommand(),
                         new TempBanCommand(),
-                        new MaintenanceCommand()
+                        new MaintenanceCommand(),
+                        new FeedCommand(),
+                        new HealCommand()
                 ));
 
         if (EssentialsConfig.enableBackPack.get()) commandSet.add(new BackpackCommand());
+        if (EssentialsConfig.useBack.get()) commandSet.add(new BackCommand());
 
         commandSet.forEach(command -> event.getDispatcher().register(command.register()));
 

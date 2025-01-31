@@ -11,19 +11,20 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
-public class FeedCommand {
+public class FeedCommand implements ICommand {
 
     // Feed Command
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("feed")
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(2)) // Restrict command to operators or permission level 2+
                 .then(Commands.argument("playerName", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(FeedCommand::executeWithPlayerName)) // Executes for a specific player
-                .executes(FeedCommand::executeDefault); // Executes for the command executor
+                        .executes(this::executeWithPlayerName)) // Executes for a specific player
+                .executes(this::executeDefault); // Executes for the command executor
     }
 
-    private static int executeDefault(CommandContext<CommandSourceStack> command) {
+    private int executeDefault(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof ServerPlayer player) {
             // Replenish the player's hunger and saturation
             player.getFoodData().setFoodLevel(20);
@@ -37,7 +38,7 @@ public class FeedCommand {
         return 0; // Indicate failure (not executed by a player)
     }
 
-    private static int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
+    private int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
         String playerName = StringArgumentType.getString(command, "playerName");
 
         // Get the target player
@@ -62,7 +63,7 @@ public class FeedCommand {
         }
     }
 
-    private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
             builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions
         }

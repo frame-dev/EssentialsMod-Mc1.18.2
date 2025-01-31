@@ -15,16 +15,17 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BackCommand {
+public class BackCommand implements ICommand {
 
     public static Map<ServerPlayer, Vec3> backMap = new HashMap<>();
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("back")
-                .executes(BackCommand::execute);
+                .executes(this::execute);
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command) {
+    private int execute(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof ServerPlayer serverPlayer) {
             if (!EssentialsConfig.useBack.get())
                 return 0; // Back is disabled
