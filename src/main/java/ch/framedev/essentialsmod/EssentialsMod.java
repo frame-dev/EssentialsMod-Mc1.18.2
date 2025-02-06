@@ -4,6 +4,7 @@ import ch.framedev.essentialsmod.commands.*;
 import ch.framedev.essentialsmod.events.*;
 import ch.framedev.essentialsmod.utils.Config;
 import ch.framedev.essentialsmod.utils.EssentialsConfig;
+import ch.framedev.essentialsmod.utils.RegisterManager;
 import com.mojang.logging.LogUtils;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -55,7 +56,7 @@ public class EssentialsMod {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 
         // Register Commands
-        MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
+        MinecraftForge.EVENT_BUS.addListener(event -> new RegisterManager().onRegisterCommands((RegisterCommandsEvent) event));
 
         // Register Events
         MinecraftForge.EVENT_BUS.register(new PlayerJoinEvent());
@@ -153,57 +154,6 @@ public class EssentialsMod {
             // Register a new block here
             LOGGER.info("HELLO from Register Block");
         }
-    }
-
-    private void onRegisterCommands(RegisterCommandsEvent event) {
-        event.getDispatcher().register(SetHomeCommand.register());
-        event.getDispatcher().register(HomeCommand.register());
-        event.getDispatcher().register(DeleteHomeCommand.register());
-
-        event.getDispatcher().register(InvseeCommand.register());
-        event.getDispatcher().register(EnderChestCommand.register());
-
-        event.getDispatcher().register(TpaHereCommand.register());
-        event.getDispatcher().register(TpaCommand.register());
-
-        event.getDispatcher().register(SpawnCommand.register());
-        event.getDispatcher().register(SetSpawnCommand.register());
-
-        event.getDispatcher().register(RepairCommand.register());
-
-        event.getDispatcher().register(FlyCommand.register());
-
-        if (EssentialsConfig.enableWarps.get()) {
-            event.getDispatcher().register(WarpCommand.register());
-            event.getDispatcher().register(DeleteWarpCommand.register());
-            event.getDispatcher().register(SetWarpCommand.register());
-        }
-
-        Set<ICommand> commandSet = new HashSet<>(
-                Set.of(
-                        new GodCommand(),
-                        new MuteOtherPlayerCommand(),
-                        new VanishCommand(),
-                        new AdminSwordCommand(),
-                        new NewGameModeCommand(),
-                        new MuteCommand(),
-                        new TempBanCommand(),
-                        new MaintenanceCommand(),
-                        new FeedCommand(),
-                        new HealCommand()
-                ));
-
-        if (EssentialsConfig.enableBackPack.get()) commandSet.add(new BackpackCommand());
-        if (EssentialsConfig.useBack.get()) commandSet.add(new BackCommand());
-
-        commandSet.forEach(command -> event.getDispatcher().register(command.register()));
-
-
-        event.getDispatcher().register(Commands.literal("day").requires(source -> source.hasPermission(2)) // Restrict to operators (level 2 or higher)
-                .executes(context -> DayNightCommand.setDay(context.getSource())));
-
-        event.getDispatcher().register(Commands.literal("night").requires(source -> source.hasPermission(2)) // Restrict to operators (level 2 or higher)
-                .executes(context -> DayNightCommand.setNight(context.getSource())));
     }
 
     /**
