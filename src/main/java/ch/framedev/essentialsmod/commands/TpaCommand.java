@@ -15,18 +15,19 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TpaCommand {
+public class TpaCommand implements ICommand {
 
     private static final Map<String, String> tpaMap = new HashMap<>();
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("tpa") // Base command
-                .then(Commands.argument("playerName", StringArgumentType.word()).suggests(PLAYER_SUGGESTION).executes(TpaCommand::sendTpaRequest)) // Handles sending requests
-                .then(Commands.literal("accept").executes(TpaCommand::acceptTpaRequest)) // Handles accepting requests
-                .then(Commands.literal("deny").executes(TpaCommand::denyTpaRequest));
+                .then(Commands.argument("playerName", StringArgumentType.word()).suggests(PLAYER_SUGGESTION).executes(this::sendTpaRequest)) // Handles sending requests
+                .then(Commands.literal("accept").executes(this::acceptTpaRequest)) // Handles accepting requests
+                .then(Commands.literal("deny").executes(this::denyTpaRequest));
     }
 
-    private static int sendTpaRequest(CommandContext<CommandSourceStack> context) {
+    private int sendTpaRequest(CommandContext<CommandSourceStack> context) {
         String targetName = StringArgumentType.getString(context, "playerName");
         CommandSourceStack source = context.getSource();
 
@@ -49,7 +50,7 @@ public class TpaCommand {
         return 1;
     }
 
-    private static int acceptTpaRequest(CommandContext<CommandSourceStack> context) {
+    private int acceptTpaRequest(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
 
         if (source.getEntity() instanceof ServerPlayer currentPlayer) {
@@ -76,7 +77,7 @@ public class TpaCommand {
         return 1;
     }
 
-    private static int denyTpaRequest(CommandContext<CommandSourceStack> context) {
+    private int denyTpaRequest(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
 
         if (source.getEntity() instanceof ServerPlayer currentPlayer) {
@@ -99,7 +100,7 @@ public class TpaCommand {
         return 1;
     }
 
-    private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
             if (!VanishCommand.vanishList.contains(player.getGameProfile().getName()))
                 builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions

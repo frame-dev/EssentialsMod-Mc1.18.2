@@ -18,16 +18,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DeleteHomeCommand {
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+public class DeleteHomeCommand implements ICommand {
+
+
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("delhome")
                 .then(Commands.argument("homeName", StringArgumentType.word())
                         .suggests(HOME_SUGGESTION)
-                        .executes(DeleteHomeCommand::executeWithHome)) // Executes with a specific home name
-                .executes(DeleteHomeCommand::executeDefault); // Executes with no arguments
+                        .executes(this::executeWithHome)) // Executes with a specific home name
+                .executes(this::executeDefault); // Executes with no arguments
     }
 
-    private static int executeWithHome(CommandContext<CommandSourceStack> context) {
+    private int executeWithHome(CommandContext<CommandSourceStack> context) {
         if (context.getSource().getEntity() instanceof Player player) {
             String homeName = StringArgumentType.getString(context, "homeName");
             if (deleteHome(player, homeName)) {
@@ -41,7 +44,7 @@ public class DeleteHomeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int executeDefault(CommandContext<CommandSourceStack> context) {
+    private int executeDefault(CommandContext<CommandSourceStack> context) {
         if (context.getSource().getEntity() instanceof Player player) {
             if (deleteHome(player, "home")) {
                 TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Default", "home Deleted!"},
@@ -54,7 +57,7 @@ public class DeleteHomeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static boolean deleteHome(Player player, String homeName) {
+    private boolean deleteHome(Player player, String homeName) {
         Config config = new Config();
         String playerKey = "home." + player.getName().getString() + "." + homeName;
         if (!config.getConfig().containsKey(playerKey + ".x")) {
@@ -69,7 +72,7 @@ public class DeleteHomeCommand {
         return true; // Successfully teleported
     }
 
-    private static List<String> getAllHomes(Player player) {
+    private List<String> getAllHomes(Player player) {
         Config config = new Config();
         Map<String, Object> defaultConfiguration = config.getConfig().getMap("home");
         if(defaultConfiguration == null)
@@ -90,7 +93,7 @@ public class DeleteHomeCommand {
         return homes;
     }
 
-    private static final SuggestionProvider<CommandSourceStack> HOME_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> HOME_SUGGESTION = (context, builder) -> {
         if (context.getSource().getEntity() instanceof Player player) {
             List<String> homes = getAllHomes(player);
             if (homes.isEmpty()) {

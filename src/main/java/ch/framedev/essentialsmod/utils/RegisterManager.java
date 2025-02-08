@@ -15,6 +15,7 @@ import ch.framedev.essentialsmod.commands.*;
 import net.minecraft.commands.Commands;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,45 +24,17 @@ import java.util.Set;
 public class RegisterManager {
 
     public void onRegisterCommands(RegisterCommandsEvent event) {
-        event.getDispatcher().register(SetHomeCommand.register());
-        event.getDispatcher().register(HomeCommand.register());
-        event.getDispatcher().register(DeleteHomeCommand.register());
-
-        event.getDispatcher().register(InvseeCommand.register());
-        event.getDispatcher().register(EnderChestCommand.register());
-
-        event.getDispatcher().register(TpaHereCommand.register());
-        event.getDispatcher().register(TpaCommand.register());
-
-        event.getDispatcher().register(SpawnCommand.register());
-        event.getDispatcher().register(SetSpawnCommand.register());
-
-        event.getDispatcher().register(RepairCommand.register());
-
-        event.getDispatcher().register(FlyCommand.register());
-
-        if (EssentialsConfig.enableWarps.get()) {
-            event.getDispatcher().register(WarpCommand.register());
-            event.getDispatcher().register(DeleteWarpCommand.register());
-            event.getDispatcher().register(SetWarpCommand.register());
-        }
-
-        Set<ICommand> commandSet = new HashSet<>(
-                Set.of(
-                        new GodCommand(),
-                        new MuteOtherPlayerCommand(),
-                        new VanishCommand(),
-                        new AdminSwordCommand(),
-                        new NewGameModeCommand(),
-                        new MuteCommand(),
-                        new TempBanCommand(),
-                        new MaintenanceCommand(),
-                        new FeedCommand(),
-                        new HealCommand()
-                ));
+        Set<ICommand> commandSet = getICommandsSet();
 
         if (EssentialsConfig.enableBackPack.get()) commandSet.add(new BackpackCommand());
         if (EssentialsConfig.useBack.get()) commandSet.add(new BackCommand());
+
+        if (EssentialsConfig.enableWarps.get()) {
+            commandSet.add(new WarpCommand());
+            commandSet.add(new DeleteWarpCommand());
+            commandSet.add(new SetWarpCommand());
+        }
+
 
         commandSet.forEach(command -> event.getDispatcher().register(command.register()));
 
@@ -71,5 +44,47 @@ public class RegisterManager {
 
         event.getDispatcher().register(Commands.literal("night").requires(source -> source.hasPermission(2)) // Restrict to operators (level 2 or higher)
                 .executes(context -> DayNightCommand.setNight(context.getSource())));
+    }
+
+    /**
+     * Creates and returns a set of ICommand objects representing various game commands.
+     * This method initializes a set of command instances for different functionalities
+     * such as teleportation, spawn management, home management, player interactions,
+     * and administrative controls.
+     *
+     * @return A non-null Set of ICommand objects containing instances of various game commands.
+     *         The set includes commands for teleportation (TPA), spawn management,
+     *         home management, player inventory viewing, god mode, muting, vanishing,
+     *         game mode changes, temporary bans, server maintenance, player healing,
+     *         item repair, and flight mode.
+     */
+    private static @NotNull Set<ICommand> getICommandsSet() {
+        return new HashSet<>(
+                Set.of(
+                        new TpaCommand(),
+                        new TpaHereCommand(),
+
+                        new SpawnCommand(),
+                        new SetSpawnCommand(),
+
+                        new SetHomeCommand(),
+                        new HomeCommand(),
+                        new DeleteHomeCommand(),
+
+                        new InvseeCommand(),
+                        new EnderChestCommand(),
+                        new GodCommand(),
+                        new MuteOtherPlayerCommand(),
+                        new VanishCommand(),
+                        new AdminSwordCommand(),
+                        new NewGameModeCommand(),
+                        new MuteCommand(),
+                        new TempBanCommand(),
+                        new MaintenanceCommand(),
+                        new FeedCommand(),
+                        new HealCommand(),
+                        new RepairCommand(),
+                        new FlyCommand()
+                ));
     }
 }

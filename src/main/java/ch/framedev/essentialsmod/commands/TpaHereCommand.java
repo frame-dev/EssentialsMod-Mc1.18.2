@@ -15,22 +15,23 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TpaHereCommand {
+public class TpaHereCommand implements ICommand {
 
     private static final Map<String, String> tpHereMap = new HashMap<>();
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("tpahere") // Base command
                 .then(Commands.argument("playerName", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(TpaHereCommand::sendTpaHereRequest)) // Handles sending requests
+                        .executes(this::sendTpaHereRequest)) // Handles sending requests
                 .then(Commands.literal("accept")
-                        .executes(TpaHereCommand::acceptTpaHereRequest)) // Handles accepting requests
+                        .executes(this::acceptTpaHereRequest)) // Handles accepting requests
                 .then(Commands.literal("deny")
-                        .executes(TpaHereCommand::denyTpaHereRequest)); // Handles denying requests
+                        .executes(this::denyTpaHereRequest)); // Handles denying requests
     }
 
-    private static int sendTpaHereRequest(CommandContext<CommandSourceStack> context) {
+    private int sendTpaHereRequest(CommandContext<CommandSourceStack> context) {
         String targetName = StringArgumentType.getString(context, "playerName");
         CommandSourceStack source = context.getSource();
 
@@ -53,7 +54,7 @@ public class TpaHereCommand {
         return 1;
     }
 
-    private static int acceptTpaHereRequest(CommandContext<CommandSourceStack> context) {
+    private int acceptTpaHereRequest(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
 
         if (source.getEntity() instanceof ServerPlayer currentPlayer) {
@@ -80,7 +81,7 @@ public class TpaHereCommand {
         return 1;
     }
 
-    private static int denyTpaHereRequest(CommandContext<CommandSourceStack> context) {
+    private int denyTpaHereRequest(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
 
         if (source.getEntity() instanceof ServerPlayer currentPlayer) {
@@ -103,7 +104,7 @@ public class TpaHereCommand {
         return 1;
     }
 
-    private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
             if (!VanishCommand.vanishList.contains(player.getGameProfile().getName()))
                 builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions

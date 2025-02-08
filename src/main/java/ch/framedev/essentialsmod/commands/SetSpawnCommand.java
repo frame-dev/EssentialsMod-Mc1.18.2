@@ -12,15 +12,16 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
-public class SetSpawnCommand {
+public class SetSpawnCommand implements ICommand {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("setspawn") // Command base
                 .requires(source -> source.hasPermission(3)) // Restrict to operators (level 3 or higher)
-                .executes(SetSpawnCommand::execute); // Executes when command is provided
+                .executes(this::execute); // Executes when command is provided
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command) {
+    private int execute(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof ServerPlayer player) {
             if (!player.hasPermissions(3))
                 return 0;

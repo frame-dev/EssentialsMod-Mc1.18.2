@@ -16,24 +16,25 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 
-public class EnderChestCommand {
+public class EnderChestCommand implements ICommand {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("enderchest") // Command base
                 .requires(source -> source.hasPermission(3)) // Restrict to operators (level 3 or higher)
                 .then(Commands.argument("playerName", StringArgumentType.word()) // String argument
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(EnderChestCommand::executeWithContext)); // Executes when command is provided
+                        .executes(this::executeWithContext)); // Executes when command is provided
     }
 
-    private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
             builder.suggest(player.getGameProfile().getName());
         }
         return builder.buildFuture();
     };
 
-    private static int executeWithContext(CommandContext<CommandSourceStack> context) {
+    private int executeWithContext(CommandContext<CommandSourceStack> context) {
         String playerName = StringArgumentType.getString(context, "playerName");
         CommandSourceStack source = context.getSource();
 

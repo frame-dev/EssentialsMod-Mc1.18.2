@@ -13,19 +13,19 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-public class RepairCommand {
+public class RepairCommand implements ICommand {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("repair")
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(2)) // Restrict command to operators or permission level 2+
                 .then(Commands.argument("playerName", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(RepairCommand::executeWithPlayerName)) // Executes for a specific player
-                .executes(RepairCommand::executeDefault); // Executes for the command executor
+                        .executes(this::executeWithPlayerName)) // Executes for a specific player
+                .executes(this::executeDefault); // Executes for the command executor
     }
 
 
-    private static int executeDefault(CommandContext<CommandSourceStack> command) {
+    private int executeDefault(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof ServerPlayer player) {
             ItemStack stack = player.getMainHandItem();
 
@@ -50,7 +50,7 @@ public class RepairCommand {
     }
 
 
-    private static int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
+    private int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
         String playerName = command.getArgument("playerName", String.class);
         ServerPlayer targetPlayer = command.getSource().getServer().getPlayerList().getPlayerByName(playerName);
 
@@ -82,7 +82,7 @@ public class RepairCommand {
         }
     }
 
-    private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
             if (!VanishCommand.vanishList.contains(player.getGameProfile().getName()))
                 builder.suggest(player.getGameProfile().getName()); // Add player names to the suggestions

@@ -18,16 +18,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DeleteWarpCommand {
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+public class DeleteWarpCommand implements ICommand {
+
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("delwarp")
                 .requires(source -> source.hasPermission(2)) // Restrict to operators or permission level 2+
                 .then(Commands.argument("warpName", StringArgumentType.word())
                         .suggests(WARP_SUGGESTIONS)
-                        .executes(DeleteWarpCommand::execute));
+                        .executes(this::execute));
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command) {
+    private int execute(CommandContext<CommandSourceStack> command) {
         if (!EssentialsConfig.enableWarps.get())
             return 0; // Warps are disabled
 
@@ -52,12 +54,12 @@ public class DeleteWarpCommand {
         }
     }
 
-    private static boolean existsWarp(String warpName) {
+    private boolean existsWarp(String warpName) {
         Config config = new Config();
         return config.getConfig().getMap("warp") != null && config.getConfig().getMap("warp").containsKey(warpName);
     }
 
-    private static boolean deleteWarp(String warpName) {
+    private boolean deleteWarp(String warpName) {
         Config config = new Config();
         Map<String, Object> warpConfig = config.getConfig().getMap("warp");
 
@@ -70,7 +72,7 @@ public class DeleteWarpCommand {
         return false; // Warp not found
     }
 
-    private static List<String> getAllWarps() {
+    private List<String> getAllWarps() {
         Config config = new Config();
         Map<String, Object> warpConfig = config.getConfig().getMap("warp");
         List<String> warps = new ArrayList<>();
@@ -82,7 +84,7 @@ public class DeleteWarpCommand {
         return warps;
     }
 
-    private static final SuggestionProvider<CommandSourceStack> WARP_SUGGESTIONS = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> WARP_SUGGESTIONS = (context, builder) -> {
         List<String> warps = getAllWarps();
         warps.forEach(builder::suggest);
         return builder.buildFuture();

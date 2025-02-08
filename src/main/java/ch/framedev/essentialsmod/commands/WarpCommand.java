@@ -25,16 +25,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class WarpCommand {
+public class WarpCommand implements ICommand {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("warp")
                 .then(Commands.argument("warpName", StringArgumentType.word())
                         .suggests(WARP_SUGGESTIONS)
-                        .executes(WarpCommand::execute));
+                        .executes(this::execute));
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command) {
+    private int execute(CommandContext<CommandSourceStack> command) {
         if (!EssentialsConfig.enableWarps.get())
             return 0; // Warps are disabled
 
@@ -57,7 +58,7 @@ public class WarpCommand {
         }
     }
 
-    public static boolean teleportToWarp(ServerPlayer player, String warpName) {
+    public boolean teleportToWarp(ServerPlayer player, String warpName) {
         Config config = new Config();
         Map<String, Object> warps = config.getConfig().getMap("warp");
 
@@ -85,7 +86,7 @@ public class WarpCommand {
         return true; // Warp successful
     }
 
-    private static List<String> getAllWarps() {
+    private List<String> getAllWarps() {
         Config config = new Config();
         Map<String, Object> warps = config.getConfig().getMap("warp");
 
@@ -94,7 +95,7 @@ public class WarpCommand {
         return new ArrayList<>(warps.keySet());
     }
 
-    private static final SuggestionProvider<CommandSourceStack> WARP_SUGGESTIONS = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> WARP_SUGGESTIONS = (context, builder) -> {
         List<String> warps = getAllWarps();
         warps.forEach(builder::suggest);
         return builder.buildFuture();

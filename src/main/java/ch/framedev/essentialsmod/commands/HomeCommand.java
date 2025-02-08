@@ -21,16 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class HomeCommand {
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+public class HomeCommand implements ICommand {
+
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("home")
                 .then(Commands.argument("homeName", StringArgumentType.word())
                         .suggests(HOME_SUGGESTION)
-                        .executes(HomeCommand::executeWithHome)) // Executes with a specific home name
-                .executes(HomeCommand::executeDefault); // Executes with no arguments
+                        .executes(this::executeWithHome)) // Executes with a specific home name
+                .executes(this::executeDefault); // Executes with no arguments
     }
 
-    private static int executeWithHome(CommandContext<CommandSourceStack> context) {
+    private int executeWithHome(CommandContext<CommandSourceStack> context) {
         if (context.getSource().getEntity() instanceof ServerPlayer player) {
             String homeName = StringArgumentType.getString(context, "homeName");
             if (teleportToHome(player, homeName)) {
@@ -44,7 +46,7 @@ public class HomeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int executeDefault(CommandContext<CommandSourceStack> context) {
+    private int executeDefault(CommandContext<CommandSourceStack> context) {
         if (context.getSource().getEntity() instanceof ServerPlayer player) {
             if (teleportToHome(player, "home")) {
                 TextComponent textComponent = ChatUtils.getTextComponent(new String[]{"Teleported to your", "default", "home"},
@@ -57,7 +59,7 @@ public class HomeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static boolean teleportToHome(ServerPlayer player, String homeName) {
+    private boolean teleportToHome(ServerPlayer player, String homeName) {
         if (!LocationsManager.existsHome(player.getName().getString(), homeName)) {
             return false; // Home doesn't exist
         }
@@ -72,7 +74,7 @@ public class HomeCommand {
         return true;
     }
 
-    private static List<String> getAllHomes(Player player) {
+    private List<String> getAllHomes(Player player) {
         Config config = new Config();
         Map<String, Object> defaultConfiguration = config.getConfig().getMap("home");
         if (defaultConfiguration == null)
@@ -92,7 +94,7 @@ public class HomeCommand {
         return homes;
     }
 
-    private static final SuggestionProvider<CommandSourceStack> HOME_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> HOME_SUGGESTION = (context, builder) -> {
         if (context.getSource().getEntity() instanceof Player player) {
             List<String> homes = getAllHomes(player);
             if (homes.isEmpty()) {

@@ -15,15 +15,17 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 
-public class SetHomeCommand {
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+public class SetHomeCommand implements ICommand {
+
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("sethome") // Command base
                 .then(Commands.argument("homeName", StringArgumentType.word()) // String argument
-                        .executes(SetHomeCommand::executeWithContext)) // Executes when only message is provided
-                .executes(SetHomeCommand::execute); // Executes with no args
+                        .executes(this::executeWithContext)) // Executes when only message is provided
+                .executes(this::execute); // Executes with no args
     }
 
-    private static int executeWithContext(CommandContext<CommandSourceStack> command) {
+    private int executeWithContext(CommandContext<CommandSourceStack> command) {
         String home = StringArgumentType.getString(command, "homeName");
         if (command.getSource().getEntity() instanceof Player player) {
             if (EssentialsConfig.enableLimitedHomes.get()) {
@@ -42,7 +44,7 @@ public class SetHomeCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command) {
+    private int execute(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof Player player) {
             String playerName = player.getName().getString();
             player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Home Set").withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);

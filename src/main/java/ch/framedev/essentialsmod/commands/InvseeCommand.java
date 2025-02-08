@@ -23,17 +23,18 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class InvseeCommand {
+public class InvseeCommand implements ICommand {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("invsee")
                 .requires(source -> source.hasPermission(3)) // Restrict to operators (level 3 or higher)
                 .then(Commands.argument("playerName", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(InvseeCommand::executeWithContext));
+                        .executes(this::executeWithContext));
     }
 
-    private static int executeWithContext(CommandContext<CommandSourceStack> context) {
+    private int executeWithContext(CommandContext<CommandSourceStack> context) {
         String playerName = StringArgumentType.getString(context, "playerName");
         CommandSourceStack source = context.getSource();
 
@@ -54,7 +55,7 @@ public class InvseeCommand {
         return 1;
     }
 
-    private static void openPlayerInventory(ServerPlayer currentPlayer, ServerPlayer targetPlayer) {
+    private void openPlayerInventory(ServerPlayer currentPlayer, ServerPlayer targetPlayer) {
         SimpleContainer virtualInventory = new SimpleContainer(36);
         for (int i = 0; i < targetPlayer.getInventory().items.size(); i++) {
             virtualInventory.setItem(i, targetPlayer.getInventory().items.get(i));
@@ -68,7 +69,7 @@ public class InvseeCommand {
         ));
     }
 
-    private static final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
+    private final SuggestionProvider<CommandSourceStack> PLAYER_SUGGESTION = (context, builder) -> {
         for (ServerPlayer player : context.getSource().getServer().getPlayerList().getPlayers()) {
             builder.suggest(player.getGameProfile().getName());
         }

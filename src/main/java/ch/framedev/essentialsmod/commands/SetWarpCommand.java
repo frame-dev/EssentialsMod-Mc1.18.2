@@ -10,16 +10,17 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
-public class SetWarpCommand {
+public class SetWarpCommand implements ICommand {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("setwarp")
                 .requires(source -> source.hasPermission(2)) // Restrict to operators or permission level 2+
                 .then(Commands.argument("warpName", StringArgumentType.word())
-                        .executes(SetWarpCommand::execute));
+                        .executes(this::execute));
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command) {
+    private int execute(CommandContext<CommandSourceStack> command) {
         if (!EssentialsConfig.enableWarps.get())
             return 0; // Warps are disabled
 

@@ -18,14 +18,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.levelgen.Heightmap;
 
-public class SpawnCommand {
+public class SpawnCommand implements ICommand {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("spawn") // Command base
-                .executes(SpawnCommand::execute); // Executes when the command is provided
+                .executes(this::execute); // Executes when the command is provided
     }
 
-    private static int execute(CommandContext<CommandSourceStack> command) {
+    private int execute(CommandContext<CommandSourceStack> command) {
         if (command.getSource().getEntity() instanceof ServerPlayer player) {
             ServerLevel world = command.getSource().getLevel(); // Get the current world
 
@@ -105,7 +106,7 @@ public class SpawnCommand {
         return 0; // Failed to teleport
     }
 
-    private static BlockPos findSafeSpawn(LevelAccessor world, BlockPos pos) {
+    private BlockPos findSafeSpawn(LevelAccessor world, BlockPos pos) {
         // Check for the highest safe block at the spawn position
         int safeY = world.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
         BlockPos safePos = new BlockPos(pos.getX(), safeY, pos.getZ());

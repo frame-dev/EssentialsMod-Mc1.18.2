@@ -13,20 +13,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 
-public class FlyCommand {
+public class FlyCommand implements ICommand {
 
-    public static LiteralArgumentBuilder<CommandSourceStack> register() {
+    @Override
+    public LiteralArgumentBuilder<CommandSourceStack> register() {
         return Commands.literal("fly")
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(2)) // Restrict command to operators or permission level 2+
                 .then(Commands.argument("playerName", StringArgumentType.word())
                         .suggests(PLAYER_SUGGESTION)
-                        .executes(FlyCommand::executeWithPlayerName) // Executes for a specific player
+                        .executes(this::executeWithPlayerName) // Executes for a specific player
                         .then(Commands.argument("speed", FloatArgumentType.floatArg(0.1f, 10f))
-                                .executes(FlyCommand::executeWithPlayerNameSpeed)))
-                .executes(FlyCommand::executeDefault); // Executes for the command executor
+                                .executes(this::executeWithPlayerNameSpeed)))
+                .executes(this::executeDefault); // Executes for the command executor
     }
 
-    private static int executeWithPlayerNameSpeed(CommandContext<CommandSourceStack> command) {
+    private int executeWithPlayerNameSpeed(CommandContext<CommandSourceStack> command) {
         String playerName = StringArgumentType.getString(command, "playerName");
         float speed = FloatArgumentType.getFloat(command, "speed");
         ServerPlayer player = command.getSource().getServer().getPlayerList().getPlayerByName(playerName);
@@ -43,7 +44,7 @@ public class FlyCommand {
     }
 
 
-    private static int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
+    private int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
         String playerName = StringArgumentType.getString(command, "playerName");
         ServerPlayer player = command.getSource().getServer().getPlayerList().getPlayerByName(playerName);
         if (player == null) {
@@ -68,7 +69,7 @@ public class FlyCommand {
         return 1;
     }
 
-    private static int executeDefault(CommandContext<CommandSourceStack> command) {
+    private int executeDefault(CommandContext<CommandSourceStack> command) {
         if (!(command.getSource().getEntity() instanceof ServerPlayer player)) {
             command.getSource().sendFailure(ChatUtils.getPrefix().append(new TextComponent("Only Player can execute this command!").withStyle(ChatFormatting.RED)));
             return 0;
