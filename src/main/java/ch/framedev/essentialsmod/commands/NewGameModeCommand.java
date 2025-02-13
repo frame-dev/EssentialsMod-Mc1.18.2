@@ -99,9 +99,9 @@ public class NewGameModeCommand implements ICommand {
         };
     }
 
-    private final List<String> gameModeList = new ArrayList<>(
+    private final List<String> gameModeList =
             List.of("s", "0", "survival",
                     "c", "1", "creative",
                     "a", "2", "adventure",
-                    "sp", "3", "spectator"));
+                    "sp", "3", "spectator");
 }

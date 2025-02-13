@@ -7,6 +7,7 @@ import ch.framedev.yamlutils.FileConfiguration;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
@@ -56,7 +57,7 @@ public class BackpackCommand implements ICommand {
             ));
             return 1;
         }
-        source.sendFailure(new TextComponent("Only players can use this command!"));
+        source.sendFailure(new TextComponent("Only players can use this command!").withStyle(ChatFormatting.RED));
         return 0;
     }
 

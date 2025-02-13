@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -43,6 +44,9 @@ public class EnderChestCommand implements ICommand {
             ServerPlayer targetPlayer = server.getPlayerList().getPlayerByName(playerName);
 
             if (targetPlayer != null) {
+                source.sendSuccess(ChatUtils.getPrefix().append(
+                        new TextComponent("Opening Ender Chest from " + targetPlayer.getName().getString())
+                               .withStyle(ChatFormatting.YELLOW)), true);
                 // Online player
                 currentPlayer.openMenu(new SimpleMenuProvider(
                         (id, playerInventory, playerEntity) ->

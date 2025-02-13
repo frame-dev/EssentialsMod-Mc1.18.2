@@ -43,6 +43,11 @@ public class InvseeCommand implements ICommand {
             ServerPlayer targetPlayer = server.getPlayerList().getPlayerByName(playerName);
 
             if (targetPlayer != null) {
+                currentPlayer.sendMessage(ChatUtils.getPrefix().append(
+                        new TextComponent("Opened " + targetPlayer.getName().getString() + "'s inventory.")
+                                .withStyle(ChatFormatting.GREEN)),
+                        Util.NIL_UUID
+                );
                 openPlayerInventory(currentPlayer, targetPlayer);
             } else {
                 currentPlayer.sendMessage(
@@ -51,6 +56,9 @@ public class InvseeCommand implements ICommand {
                         Util.NIL_UUID
                 );
             }
+        } else {
+            source.sendFailure(ChatUtils.getPrefix().append(
+                    new TextComponent("You must be a player to use this command.").withStyle(ChatFormatting.RED)));
         }
         return 1;
     }

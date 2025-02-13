@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -30,18 +31,19 @@ public class RepairCommand implements ICommand {
             ItemStack stack = player.getMainHandItem();
 
             if (stack.isEmpty()) {
-                player.sendMessage(new TextComponent("You are not holding any item!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("You are not holding any item!").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
                 return 0; // Fail if no item is held
             }
 
             if (!stack.isDamageableItem()) {
-                player.sendMessage(new TextComponent("The item in your hand cannot be repaired!").withStyle(ChatFormatting.RED), Util.NIL_UUID);
+                player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("The item in your hand cannot be repaired!").withStyle(ChatFormatting.RED)), Util.NIL_UUID);
                 return 0; // Fail if the item is not damageable
             }
 
             // Repair the item by resetting its damage value
             stack.setDamageValue(0);
-            player.sendMessage(new TextComponent("Your item has been repaired!"), Util.NIL_UUID);
+            player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Your item has been repaired!")
+                    .withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
 
             return Command.SINGLE_SUCCESS; // Indicate success
         }
@@ -58,12 +60,14 @@ public class RepairCommand implements ICommand {
             ItemStack stack = targetPlayer.getMainHandItem();
 
             if (stack.isEmpty()) {
-                command.getSource().sendSuccess(new TextComponent(playerName + " is not holding any item!").withStyle(ChatFormatting.RED), true);
+                command.getSource().sendSuccess(ChatUtils.getPrefix().append(new TextComponent(playerName + " is not holding any item!")
+                        .withStyle(ChatFormatting.RED)), true);
                 return 0; // Fail if no item is held
             }
 
             if (!stack.isDamageableItem()) {
-                command.getSource().sendSuccess(new TextComponent("The item in " + playerName + "'s hand cannot be repaired!").withStyle(ChatFormatting.RED), true);
+                command.getSource().sendSuccess(ChatUtils.getPrefix().append(new TextComponent("The item in " + playerName + "'s hand cannot be repaired!")
+                        .withStyle(ChatFormatting.RED)), true);
                 return 0; // Fail if the item is not damageable
             }
 
@@ -71,8 +75,10 @@ public class RepairCommand implements ICommand {
             stack.setDamageValue(0);
 
             // Inform both the target player and the command source
-            targetPlayer.sendMessage(new TextComponent("Your item has been repaired by " + command.getSource().getDisplayName().getString() + "!"), Util.NIL_UUID);
-            command.getSource().sendSuccess(new TextComponent("Repaired the item for " + playerName + "!"), true);
+            targetPlayer.sendMessage(ChatUtils.getPrefix().append(new TextComponent("Your item has been repaired by " + command.getSource().getDisplayName().getString() + "!")
+                    .withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
+            command.getSource().sendSuccess(ChatUtils.getPrefix().append(new TextComponent("Repaired the item for " + playerName + "!")
+                    .withStyle(ChatFormatting.GREEN)), true);
 
             return Command.SINGLE_SUCCESS; // Indicate success
         } else {

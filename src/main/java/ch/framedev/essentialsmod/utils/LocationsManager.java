@@ -15,10 +15,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class LocationsManager {
+
+    private static final Map<String, Location> homeMap = new HashMap<>();
+    private static final boolean useConfigForHome = new Config().getBoolean("useConfigForHomes");
 
     public static boolean existsSpawn() {
         Config config = new Config();
@@ -36,8 +41,7 @@ public class LocationsManager {
     }
 
     public static @Nullable Location getSpawn() {
-        if (!existsSpawn())
-            return null;
+        if (!existsSpawn()) return null;
 
         Config config = new Config();
         String dimension = config.getConfig().getString("spawn.dimension");
@@ -64,8 +68,7 @@ public class LocationsManager {
     }
 
     public static @Nullable Location getWarp(@NotNull String warpName) {
-        if (!existsWarp(warpName))
-            return null;
+        if (!existsWarp(warpName)) return null;
 
         Config config = new Config();
         String dimension = config.getConfig().getString("warp." + warpName + ".dimension");
@@ -77,48 +80,60 @@ public class LocationsManager {
     }
 
     public static boolean existsHome(@NotNull String playerName, String home) {
-        String saveKey = "home." + playerName + ".";
-        if (home == null)
-            home = "home";
+        if (useConfigForHome) {
+            String saveKey = "home." + playerName + ".";
+            if (home == null) home = "home";
 
-        Config config = new Config();
-        return config.getConfig().containsKey(saveKey + home + ".x");
+            Config config = new Config();
+            return config.getConfig().containsKey(saveKey + home + ".x");
+        } else {
+            return homeMap.containsKey(playerName + "." + home);
+        }
     }
 
     public static void setHome(@NotNull String playerName, @NotNull Location location, String home) {
-        String saveKey = "home." + playerName + ".";
-        if (home == null)
-            home = "home";
+        if (useConfigForHome) {
+            String saveKey = "home." + playerName + ".";
+            if (home == null) home = "home";
 
-        // Save the home location in the config
-        Config config = new Config();
-        config.getConfig().set(saveKey + home + ".dimension", location.getDimension());
-        config.getConfig().set(saveKey + home + ".x", location.getX());
-        config.getConfig().set(saveKey + home + ".y", location.getY());
-        config.getConfig().set(saveKey + home + ".z", location.getZ());
-        config.getConfig().save();
+            // Save the home location in the config
+            Config config = new Config();
+            config.getConfig().set(saveKey + home + ".dimension", location.getDimension());
+            config.getConfig().set(saveKey + home + ".x", location.getX());
+            config.getConfig().set(saveKey + home + ".y", location.getY());
+            config.getConfig().set(saveKey + home + ".z", location.getZ());
+            config.getConfig().save();
+        } else {
+            if (!existsHome(playerName, home)) {
+                homeMap.put(playerName + "." + home, location);
+            } else {
+                homeMap.replace(playerName + "." + home, location);
+            }
+        }
     }
 
     public static @Nullable Location getHome(@NotNull String playerName, String home) {
-        String saveKey = "home." + playerName + ".";
-        if (home == null)
-            home = "home";
+        if (useConfigForHome) {
+            String saveKey = "home." + playerName + ".";
+            if (home == null) home = "home";
 
-        if (!existsHome(playerName, home))
-            return null;
+            if (!existsHome(playerName, home)) return null;
 
-        Config config = new Config();
-        if(!config.containsKey(saveKey + home + ".dimension")) {
-            String dimension = config.getConfig().getString(saveKey + home + ".dimension");
-            int x = config.getConfig().getInt(saveKey + home + ".x");
-            int y = config.getConfig().getInt(saveKey + home + ".y");
-            int z = config.getConfig().getInt(saveKey + home + ".z");
-            return new Location(dimension, x, y, z);
+            Config config = new Config();
+            if (!config.containsKey(saveKey + home + ".dimension")) {
+                String dimension = config.getConfig().getString(saveKey + home + ".dimension");
+                int x = config.getConfig().getInt(saveKey + home + ".x");
+                int y = config.getConfig().getInt(saveKey + home + ".y");
+                int z = config.getConfig().getInt(saveKey + home + ".z");
+                return new Location(dimension, x, y, z);
+            } else {
+                int x = config.getConfig().getInt(saveKey + home + ".x");
+                int y = config.getConfig().getInt(saveKey + home + ".y");
+                int z = config.getConfig().getInt(saveKey + home + ".z");
+                return new Location(null, x, y, z);
+            }
         } else {
-            int x = config.getConfig().getInt(saveKey + home + ".x");
-            int y = config.getConfig().getInt(saveKey + home + ".y");
-            int z = config.getConfig().getInt(saveKey + home + ".z");
-            return new Location(null, x, y,z);
+            return homeMap.getOrDefault(playerName + "." + home, null);
         }
     }
 
@@ -131,23 +146,30 @@ public class LocationsManager {
 
     @SuppressWarnings("unchecked")
     public static List<String> getHomes(String playerName, boolean ignoreDefault) {
-        Config config = new Config();
-        Map<String, Object> defaultConfiguration = config.getConfig().getMap("home");
-        if (defaultConfiguration == null)
-            return new ArrayList<>();
-        if (!defaultConfiguration.containsKey(playerName))
-            return new ArrayList<>();
-        Map<String, Object> configuration = (Map<String, Object>) defaultConfiguration.get(playerName);
-        if (configuration == null) {
-            return new ArrayList<>();
-        }
         List<String> homes = new ArrayList<>();
-        for (String home : configuration.keySet()) {
-            if (home != null && !"null".equalsIgnoreCase(String.valueOf(configuration.get(home)))) {
-                if (!(ignoreDefault && "home".equalsIgnoreCase(home))) {
-                    homes.add(home);
+        if (useConfigForHome) {
+            Config config = new Config();
+            Map<String, Object> defaultConfiguration = config.getConfig().getMap("home");
+            if (defaultConfiguration == null) return new ArrayList<>();
+            if (!defaultConfiguration.containsKey(playerName)) return new ArrayList<>();
+            Map<String, Object> configuration = (Map<String, Object>) defaultConfiguration.get(playerName);
+            if (configuration == null) {
+                return new ArrayList<>();
+            }
+            for (String home : configuration.keySet()) {
+                if (home != null && !"null".equalsIgnoreCase(String.valueOf(configuration.get(home)))) {
+                    if (!(ignoreDefault && "home".equalsIgnoreCase(home))) {
+                        homes.add(home);
+                    }
                 }
             }
+        } else {
+            homes = homeMap.keySet().stream()
+                    .map(location -> location.split("\\."))
+                    .filter(parts -> parts.length >= 2 && parts[0].equalsIgnoreCase(playerName))
+                    .filter(parts -> !(ignoreDefault && "home".equalsIgnoreCase(parts[1])))
+                    .map(parts -> parts[1])
+                    .collect(Collectors.toList());
         }
         return homes;
     }

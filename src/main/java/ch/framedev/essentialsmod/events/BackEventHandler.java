@@ -22,7 +22,14 @@ public class BackEventHandler {
 
             Vec3 vec3 = new Vec3(player.getX(), player.getY(), player.getZ());
             BackCommand.backMap.put(player, vec3);
-            player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("If you won't Back to your Death Location use /back!")), player.getUUID());
+            TextComponent textComponent = ChatUtils.getTextComponent(
+                    new String[]{
+                            "If you won't Back to your Death Location use",
+                            "/back!"
+                    },
+                    new String[]{"§b", "§a"}
+            );
+            player.sendMessage(ChatUtils.getPrefix().append(textComponent), player.getUUID());
         }
     }
 }

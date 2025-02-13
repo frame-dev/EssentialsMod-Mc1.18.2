@@ -12,6 +12,7 @@ package ch.framedev.essentialsmod.utils;
  */
 
 import ch.framedev.essentialsmod.commands.*;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.minecraft.commands.Commands;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,15 +21,27 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-@Mod.EventBusSubscriber(modid = "essentials") // Replace with your mod's ID
+@Mod.EventBusSubscriber(modid = "essentials")
 public class RegisterManager {
 
+    /**
+     * Registers commands for the Essentials mod based on configuration settings.
+     * This method is called when Minecraft is registering commands and sets up various
+     * custom commands such as backpack, back, warps, and day/night controls.
+     *
+     * @param event The RegisterCommandsEvent that provides access to the command dispatcher
+     *              for registering new commands.
+     */
     public void onRegisterCommands(RegisterCommandsEvent event) {
         Set<ICommand> commandSet = getICommandsSet();
 
+        // Enable or disable the backpack command
         if (EssentialsConfig.enableBackPack.get()) commandSet.add(new BackpackCommand());
+
+        // Enable or disable the /back command
         if (EssentialsConfig.useBack.get()) commandSet.add(new BackCommand());
 
+        // Enable or disable the /warp /setwarp /delwarp command
         if (EssentialsConfig.enableWarps.get()) {
             commandSet.add(new WarpCommand());
             commandSet.add(new DeleteWarpCommand());
@@ -39,11 +52,16 @@ public class RegisterManager {
         commandSet.forEach(command -> event.getDispatcher().register(command.register()));
 
 
+        // Register day/night commands
         event.getDispatcher().register(Commands.literal("day").requires(source -> source.hasPermission(2)) // Restrict to operators (level 2 or higher)
                 .executes(context -> DayNightCommand.setDay(context.getSource())));
 
         event.getDispatcher().register(Commands.literal("night").requires(source -> source.hasPermission(2)) // Restrict to operators (level 2 or higher)
                 .executes(context -> DayNightCommand.setNight(context.getSource())));
+
+        event.getDispatcher().register(Commands.literal("setticks").requires(source -> source.hasPermission(2))
+                .then(Commands.argument("ticks", IntegerArgumentType.integer())
+                        .executes(DayNightCommand::setTicks)));
     }
 
     /**

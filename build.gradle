@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 
 
-version = '1.0.7'
+version = '1.0.8'
 group = 'ch.framedev.essentials' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'essentials-Mc1.18.2-v'
 
@@ -163,7 +163,7 @@ dependencies {
 
 
 
-    implementation fg.deobf("ch.framedev:JavaYamlUtils:1.2.0-RELEASE")
+    implementation fg.deobf("ch.framedev:JavaYamlUtils:1.2.2-RELEASE")
 //    shaded ("ch.framedev:JavaYamlUtils:1.2.0-RELEASE")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings

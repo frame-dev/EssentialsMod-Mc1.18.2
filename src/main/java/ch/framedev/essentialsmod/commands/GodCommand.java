@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -37,7 +38,7 @@ public class GodCommand implements ICommand {
             }
             return 1;
         } else {
-            command.getSource().sendFailure(new TextComponent("Could not find player " + playerName));
+            command.getSource().sendFailure(new TextComponent("Could not find player " + playerName).withStyle(ChatFormatting.RED));
             return 0;
         }
     }
@@ -53,7 +54,7 @@ public class GodCommand implements ICommand {
             }
             return 1;
         } else {
-            command.getSource().sendFailure(new TextComponent("Only a player can execute this command!"));
+            command.getSource().sendFailure(new TextComponent("Only a player can execute this command!").withStyle(ChatFormatting.RED));
             return 0;
         }
     }

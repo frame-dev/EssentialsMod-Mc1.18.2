@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -25,17 +26,22 @@ public class FeedCommand implements ICommand {
     }
 
     private int executeDefault(CommandContext<CommandSourceStack> command) {
-        if (command.getSource().getEntity() instanceof ServerPlayer player) {
-            // Replenish the player's hunger and saturation
-            player.getFoodData().setFoodLevel(20);
-            player.getFoodData().setSaturation(5.0F);
-
-            // Send feedback to the player
-            player.sendMessage(new TextComponent("Your food bar has been fully replenished!").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
-
-            return 1; // Indicate success
+        if (!(command.getSource().getEntity() instanceof ServerPlayer player)) {
+            command.getSource().sendFailure(ChatUtils.getPrefix().append(new TextComponent("Only players can use this command!")));
+            return 0;
         }
-        return 0; // Indicate failure (not executed by a player)
+        // Replenish the player's hunger and saturation
+        player.getFoodData().setFoodLevel(20);
+        player.getFoodData().setSaturation(5.0F);
+
+        // Send feedback to the player
+        TextComponent textComponent = (TextComponent) ChatUtils.getPrefix().append(
+                ChatUtils.getColoredTextComponent("Your food bar has been fully replenished!",
+                        ChatFormatting.GREEN
+                ));
+        player.sendMessage(textComponent, player.getUUID());
+
+        return 1; // Indicate success
     }
 
     private int executeWithPlayerName(CommandContext<CommandSourceStack> command) {
@@ -50,10 +56,29 @@ public class FeedCommand implements ICommand {
             targetPlayer.getFoodData().setSaturation(5.0F);
 
             // Send feedback to the target player
-            targetPlayer.sendMessage(new TextComponent("Your food bar has been fully replenished by " + command.getSource().getDisplayName().getString() + "!"), Util.NIL_UUID);
+            TextComponent textComponent = (TextComponent) ChatUtils.getPrefix().append(
+                    ChatUtils.getTextComponent(new String[]{
+                                    "Your food bar has been fully replenished by",
+                                    command.getSource().getDisplayName().getString(),
+                                    "!"
+                            },
+                            new String[]{"§a", "§b", "§a"}
+                    )
+            );
+            targetPlayer.sendMessage(
+                    textComponent, targetPlayer.getUUID());
 
             // Send feedback to the command source
-            command.getSource().sendSuccess(new TextComponent("Replenished food for " + targetPlayer.getName().getString()), true);
+            TextComponent textSource = (TextComponent) ChatUtils.getPrefix().append(
+                    ChatUtils.getTextComponent(new String[]{
+                                    "You replenished food for",
+                                    targetPlayer.getName().getString(),
+                                    "."
+                            },
+                            new String[]{"§a", "§b", "§a"}
+                    )
+            );
+            command.getSource().sendSuccess(textSource, true);
 
             return 1; // Indicate success
         } else {

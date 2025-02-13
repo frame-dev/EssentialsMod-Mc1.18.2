@@ -4,7 +4,6 @@ import ch.framedev.essentialsmod.EssentialsMod;
 import ch.framedev.yamlutils.FileConfiguration;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,23 +12,29 @@ public class Config {
     private final FileConfiguration config;
 
     public Config() {
+        // Create the config.yml file if it doesn't exist yet
         if (!EssentialsMod.configFile.exists()) {
             if (!EssentialsMod.configFile.getParentFile().mkdirs())
                 EssentialsMod.getLOGGER().warn("Could not create config Directory");
             try {
                 if (!EssentialsMod.configFile.createNewFile())
-                    throw new RuntimeException("Failed to create config file.");
+                    EssentialsMod.getLOGGER().warn("Could not create config file.");
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                EssentialsMod.getLOGGER().error("Could not create config file.", e);
             }
         }
+        // initialize the config.yml file
         this.config = new FileConfiguration(EssentialsMod.configFile);
         this.config.load();
         if (!config.containsKey("back")) {
             this.config.set("back", true);
-            this.config.set("useConfigForHomes", true);
             this.config.save();
             EssentialsMod.getLOGGER().info("Back enabled by default in config.");
+        }
+        if(!config.containsKey("useConfigForHomes")) {
+            this.config.set("useConfigForHomes", true);
+            this.config.save();
+            EssentialsMod.getLOGGER().info("useConfigForHomes enabled by default in config.");
         }
     }
 
@@ -79,16 +84,24 @@ public class Config {
         return config.getKeys(key);
     }
 
+    public List<?> getList(String key, List<?> defaultValue) {
+        if(config.getData().containsKey(key))
+            return (List<?>) config.getData().get(key);
+        return defaultValue;
+    }
+
     public boolean containsKey(String key) {
-        return config.containsKey(key);
+        return config.getData().containsKey(key);
     }
 
     public boolean containsValue(Object value) {
-        return config.containsValue(value);
+        return config.getData().containsValue(value);
     }
 
     public void save() {
+        EssentialsMod.getLOGGER().info("Saving configuration");
         config.save();
+        EssentialsMod.getLOGGER().info("Configuration saved");
     }
 
     public Map<String, Object> getWarpConfig() {
@@ -105,7 +118,14 @@ public class Config {
         return (Map<String, Object>) defaultConfiguration.get(playerName);
     }
 
+    /**
+     * Returns the FileConfiguration instance used for reading and writing configuration data.
+     *
+     * @return The FileConfiguration instance representing the configuration file.
+     *
+     * @see FileConfiguration
+     */
     public FileConfiguration getConfig() {
-        return config;
+        return this.config;
     }
 }

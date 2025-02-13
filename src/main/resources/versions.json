@@ -1,11 +1,12 @@
 {
-  "latest": "1.0.7",
+  "latest": "1.0.8",
   "download-file": "essentials-Mc1.18.2-v",
   "versions": [
     "1.0.4",
     "1.0.5",
     "1.0.6",
-    "1.0.7"
+    "1.0.7",
+    "1.0.8"
   ],
   "versionDescriptions": [
     {
@@ -33,6 +34,13 @@
         "Backpack configuration to save only as Map added",
         "Fly speed added",
         "Vanish silent join and leave added"
+      ]
+    },
+    {
+      "version": "1.0.8",
+      "description": [
+        "Better Command registration",
+        "Various bug fixes"
       ]
     }
   ]

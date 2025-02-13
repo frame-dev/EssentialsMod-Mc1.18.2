@@ -46,7 +46,7 @@ public class MuteCommand implements ICommand {
                 mutedPlayers.add(playerName); // Mute the player
                 TextComponent textComponent = ChatUtils.getTextComponent(new String[]{playerName, "has been muted."}, new String[]{"§b","§a"});
                 source.sendSuccess(textComponent, true);
-                targetPlayer.sendMessage(new TextComponent("You have been muted by an admin.").withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
+                targetPlayer.sendMessage(new TextComponent("You have been muted by an admin.").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 Config config = new Config();
                 config.getConfig().set("muted", mutedPlayers.stream().toList());
                 config.getConfig().save();

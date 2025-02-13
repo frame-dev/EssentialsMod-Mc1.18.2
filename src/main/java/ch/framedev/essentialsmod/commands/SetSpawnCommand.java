@@ -1,9 +1,11 @@
 package ch.framedev.essentialsmod.commands;
 
 import ch.framedev.essentialsmod.EssentialsMod;
+import ch.framedev.essentialsmod.utils.ChatUtils;
 import ch.framedev.essentialsmod.utils.Config;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -42,13 +44,14 @@ public class SetSpawnCommand implements ICommand {
                 world.setDefaultSpawnPos(playerPos, 0); // Set spawn and yaw (default 0)
 
                 // Notify the player
-                player.sendMessage(new TextComponent("World spawn set to your current position: " +
-                        player.getBlockX() + ", " + player.getBlockY() + ", " + player.getBlockZ()), Util.NIL_UUID);
+                player.sendMessage(ChatUtils.getPrefix().append(new TextComponent("World spawn set to your current position: " +
+                        player.getBlockX() + ", " + player.getBlockY() + ", " + player.getBlockZ())
+                        .withStyle(ChatFormatting.GREEN)), Util.NIL_UUID);
 
                 return 1; // Indicate success
             } catch (Exception ex) {
                 EssentialsMod.getLOGGER().error("Failed to set spawn.", ex);
-                player.sendMessage(new TextComponent("An error occurred while setting the world spawn."), Util.NIL_UUID);
+                player.sendMessage(new TextComponent("An error occurred while setting the world spawn.").withStyle(ChatFormatting.RED), Util.NIL_UUID);
                 return 0; // Indicate failure
             }
         }

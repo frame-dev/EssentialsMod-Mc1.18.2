@@ -1,5 +1,6 @@
 package ch.framedev.essentialsmod.commands;
 
+import ch.framedev.essentialsmod.EssentialsMod;
 import ch.framedev.essentialsmod.utils.Config;
 import ch.framedev.essentialsmod.utils.EssentialsConfig;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -50,6 +51,7 @@ public class DeleteWarpCommand implements ICommand {
                 return 0; // Failure
             }
         } catch (CommandSyntaxException e) {
+            EssentialsMod.getLOGGER().error("Failed to execute /delwarp command", e);
             throw new RuntimeException("Failed to execute /delwarp command", e);
         }
     }
